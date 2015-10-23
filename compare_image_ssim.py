@@ -37,5 +37,6 @@ if __name__=='__main__':
         if score > max_score:
             max_score = score
             max_image = im
-            print "Image: "+str(im)+" with score: "+str(score)
+            print "MIN_SCORE - Image: "+str(im)+" with score: "+str(score)
+        print "Image: "+str(im)+" with score: "+str(score)
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
