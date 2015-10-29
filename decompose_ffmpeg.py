@@ -8,7 +8,7 @@ SAMPLE_RATE = 4
 
 # video_path is a .mp4 file; output_dir is the directory containing all the output frames.
 def extract_frames(video_path, output_dir):
-    output_files = os.path.join(output_dir, "frame_%05d.jpg")
+    output_files = os.path.join(output_dir, "frame_%05d.png")
     # cmd = ["ffmpeg", "-i", video_path, "-r", str(SAMPLE_RATE), output_files]
     # print "command running is", cmd
     # subprocess.call(cmd, shell=True)

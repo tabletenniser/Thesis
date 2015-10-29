@@ -25,7 +25,7 @@ def download_video(yt, path, file_name):
     # yt.videos[0].download()
     try:
         # yt.videos[0].download(path=os.getcwd(), on_progress=print_status)
-        yt.get('mp4', '360p').download(path=path, on_progress=print_status)
+        yt.get('mp4', '720p').download(path=path, on_progress=print_status)
     except KeyboardInterrupt:
         print("Download interrupted.")
     # Note: If you wanted to choose the output directory, simply pass it as an
