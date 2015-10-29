@@ -19,17 +19,21 @@ match = []              # match[i-SHORT_VIDEO_STARTING_FRAME] = corresponding in
 
 def compute_offset(args, s_index, f_index):
     short_video_file = os.path.join(args.short_video_dir, 'frame_%05d.jpg'%s_index)
-    short_video_image = io.imread(short_video_file, as_grey=True)
-    max_score = -1
+    # short_video_image = io.imread(short_video_file)
+    min_score = 9999999
     count = 0
     while (count < NUM_OF_FRAMES):
         full_video_file = os.path.join(args.full_video_dir, 'frame_%05d.jpg'%(f_index+count))
         if not os.path.exists(full_video_file):
             break
-        full_video_image = io.imread(full_video_file, as_grey = True)
-        score = ssim(short_video_image, full_video_image)
-        if score > max_score:
-            max_score = score
+        # full_video_image = io.imread(full_video_file)
+        image1 = Image.open(short_video_file)
+        image2 = Image.open(full_video_file)
+        h1 = image1.histogram()
+        h2 = image2.histogram()
+        score = math.sqrt(reduce(operator.add, map(lambda a,b: (a-b)**2, h1, h2))/len(h1))
+        if score < min_score:
+            min_score = score
             max_f_index = f_index+count
         count+=1
     return max_f_index-s_index

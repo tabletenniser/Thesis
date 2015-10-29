@@ -6,11 +6,12 @@ from skimage.measure import structural_similarity as ssim
 from skimage import color
 from skimage import io
 from PIL import Image
+import lib_compare
 
 # SHORT_VIDEO_STARTING_FRAME = 1
-SHORT_VIDEO_STARTING_FRAME = 50
+SHORT_VIDEO_STARTING_FRAME = 89
 # FULL_VIDEO_STARTING_FRAME = 896
-FULL_VIDEO_STARTING_FRAME = 1073
+FULL_VIDEO_STARTING_FRAME = 1201
 # FRAME_NUM_OFFSET = 895
 FRAME_NUM_OFFSET = FULL_VIDEO_STARTING_FRAME - SHORT_VIDEO_STARTING_FRAME
 WINDOW_SIZE = 5
@@ -19,19 +20,19 @@ match = []              # match[i-SHORT_VIDEO_STARTING_FRAME] = corresponding in
 
 def compute_offset(args, s_index, f_index):
     short_video_file = os.path.join(args.short_video_dir, 'frame_%05d.jpg'%s_index)
-    short_video_image = io.imread(short_video_file, as_grey=True)
-    max_score = -1
+    min_score = 99999999
     count = 0
     while (count < NUM_OF_FRAMES):
         full_video_file = os.path.join(args.full_video_dir, 'frame_%05d.jpg'%(f_index+count))
         if not os.path.exists(full_video_file):
             break
-        full_video_image = io.imread(full_video_file, as_grey = True)
-        score = ssim(short_video_image, full_video_image)
-        if score > max_score:
-            max_score = score
+        score = lib_compare.main(s_index, (f_index+count), short_video_file, full_video_file)
+        # print score
+        if score < min_score:
+            min_score = score
             max_f_index = f_index+count
         count+=1
+    # print "f_index:"+str(f_index)+"\tmax_f_index:"+str(max_f_index)
     return max_f_index-s_index
 
 if __name__=='__main__':
@@ -50,9 +51,9 @@ if __name__=='__main__':
     print short_video_file
     max_offset_count = 0
     min_over_offset = 99999999
-    while (os.path.exists(short_video_file) and (s_index - SHORT_VIDEO_STARTING_FRAME )<40):
+    while (os.path.exists(short_video_file) and (s_index - SHORT_VIDEO_STARTING_FRAME )<300):
         max_offset = compute_offset(args, s_index, s_index+cur_offset)
-        print "Offset for s_index "+str(s_index)+" is "+str(max_offset)+"."
+        print "============ Offset for s_index "+str(s_index)+" is "+str(max_offset)+"============"
         match.append(max_offset)
         if max_offset > cur_offset+5:
             if max_offset_count == 5:
