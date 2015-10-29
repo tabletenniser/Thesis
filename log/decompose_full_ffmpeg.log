@@ -1,0 +1,11 @@
+Input directory is  /media/wangze1/FAT32_FORMA/Thesis/full_video
+Output directory is  /media/wangze1/FAT32_FORMA/Thesis/full_video/frames
+Skip non .mp4 file /media/wangze1/FAT32_FORMA/Thesis/full_video/url.txt
+Skip non .mp4 file /media/wangze1/FAT32_FORMA/Thesis/full_video/._url.txt
+Input video path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/video1_xuxin_vs_zhangjike_kuwait_2015.mp4
+Output path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/frames/video1_xuxin_vs_zhangjike_kuwait_2015
+Input video path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/video2_malong_vs_fanzhendong_kuwait_2015.mp4
+Output path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/frames/video2_malong_vs_fanzhendong_kuwait_2015
+Input video path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/video3_malong_vs_xuxin_kuwait_2015.mp4
+Output path is:  /media/wangze1/FAT32_FORMA/Thesis/full_video/frames/video3_malong_vs_xuxin_kuwait_2015
+TOTAL EXECUTION TIME:354.816034079 seconds
