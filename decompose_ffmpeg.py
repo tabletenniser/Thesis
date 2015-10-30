@@ -3,7 +3,7 @@ import os
 # import subprocess
 import time
 
-# Take 4 .jpg iamges per second
+# Take 4 .png iamges per second
 SAMPLE_RATE = 4
 
 # video_path is a .mp4 file; output_dir is the directory containing all the output frames.
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("input_dir", type=str, help='Path to the directory where .mp4 files locate')
-    parser.add_argument("output_dir", type=str, help='Path to where the .jpg frames will be output to')
+    parser.add_argument("output_dir", type=str, help='Path to where the .png frames will be output to')
     args = parser.parse_args()
     args.input_dir = os.path.abspath(args.input_dir)
     args.output_dir = os.path.abspath(args.output_dir)
