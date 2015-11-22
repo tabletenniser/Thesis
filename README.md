@@ -9,3 +9,4 @@ Steps:
 3. (optional) python create_edge_detected_frames.py `<folder_where_jpg_files_locate>` `<output_folder_for_edge_detected_images>`
 4. python label_match_diff.py `<directory_for_short_video_frames>` `<directory_for_full_video_frames>` | tee log.txt
   * assume all images in the folder have the format of frame_%05d.jpg
+5. python score_recognition.py `<directory_for_short_video_frames>` `<directory_for_score_images>` | tee log.txt

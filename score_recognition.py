@@ -8,43 +8,46 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 
-# IMAGE='testing/images/frame_00321.png'
-# output_image='testing/images/frame_cropped.png'
-output_image2='testing/images/frame_cropped_clean.png'
-TOP_LEFT_X=366  #362 for 720p, 182 for 360p
-TOP_LEFT_Y=590  #590 for 720p, 295/6 for 360p
-DELTA_X=35      #35 for 720p, 15/8 for 360p
-DELTA_Y=28      #20 for 720p, 12/4 for 360p
+TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
+TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
+DELTA_X=24      #35 for 720p, 15/8 for 360p
+DELTA_Y=24      #28 for 720p, 12/4 for 360p
 # TOP_LEFT_X=182  #362 for 720p, 182 for 360p
 # TOP_LEFT_Y=295  #590 for 720p, 295/6 for 360p
 # DELTA_X=18      #35 for 720p, 15/8 for 360p
 # DELTA_Y=14      #20 for 720p, 12/4 for 360p
 # START_FRAME=389
-START_FRAME=1430
-END_FRAME=1480
+START_FRAME=36
+END_FRAME=1000
 
 def valid(num):
     if num != None and num!="" and len(num)==1 or len(num)==2 and num[0]=='1':
         return True
     return False
 
-def find_num(input_png, output_png_1, output_png_2):
-    # im = Image.open(IMAGE)
-    im = Image.open(input_png).convert('L')
+def set_valid(num):
+    if num != None and num!="" and len(num)==1 and num[0] <= '4' and num[0] >= '0':
+        return True
+    return False
+
+def find_num(input_png, output_serve, output_score_1, output_score_2, output_set_1, output_set_2):
+    im = Image.open(input_png)
+    # im = Image.open(input_png).convert('L')
+    im_serve = im.crop((TOP_LEFT_X-DELTA_X, TOP_LEFT_Y, TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y))
+    im_serve.save(output_serve)
     im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y))
-    im1.save(output_png_1)
+    im1.save(output_score_1)
     im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
-    im2.save(output_png_2)
-    # cmd = "./textcleaner "+output_png+" "+output_image2
-    # os.system(cmd)
-    # im = Image.open(output_image2).convert('L')
-    im_1 = Image.open(output_png_1).convert('L')
-    im_2 = Image.open(output_png_2).convert('L')
-    # print(pytesseract.image_to_string(im, boxes=True, config='-psm 6 digits'))
+    im2.save(output_score_2)
+    im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    im_set1.save(output_set_1)
+    im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    im_set2.save(output_set_2)
+    # im_1 = Image.open(output_png_1).convert('L')
+    # im_2 = Image.open(output_png_2).convert('L')
     # print(pytesseract.image_to_string(im, config='-psm 6 digits'))
     CONF = '-psm 6 digits'
-    return (pytesseract.image_to_string(im_1, config=CONF), pytesseract.image_to_string(im_2, config=CONF))
-    # return (pytesseract.image_to_string(im, config='-psm 5 digits'))
+    return (pytesseract.image_to_string(im_serve, config=CONF), pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
 
 if __name__=='__main__':
     start_time = time.time()
@@ -62,24 +65,37 @@ if __name__=='__main__':
     frame_num = []
     score_num_1 = []
     score_num_2 = []
+    set_num_1 = []
+    set_num_2 = []
     # print input_frame_file
     while (os.path.exists(input_frame_file) and index<=END_FRAME):
         input_frame_file = os.path.join(args.input_dir, 'frame_%05d.png'%index)
-        output_frame_file_1 = os.path.join(args.output_dir, 'frame_%05d_1.png'%index)
-        output_frame_file_2 = os.path.join(args.output_dir, 'frame_%05d_2.png'%index)
-        num_1,num_2 = find_num(input_frame_file, output_frame_file_1, output_frame_file_2)
+        output_serve = os.path.join(args.output_dir, 'frame_%05d_serve1.png'%index)
+        output_score_1 = os.path.join(args.output_dir, 'frame_%05d_1.png'%index)
+        output_score_2 = os.path.join(args.output_dir, 'frame_%05d_2.png'%index)
+        output_set_1 = os.path.join(args.output_dir, 'frame_%05d_set_1.png'%index)
+        output_set_2 = os.path.join(args.output_dir, 'frame_%05d_set_2.png'%index)
+        num_serve, num_1,num_2, num_set1, num_set2 = find_num(input_frame_file, output_serve, output_score_1, output_score_2, output_set_1, output_set_2)
+        num_1 = num_1.strip()
+        num_2 = num_2.strip()
+        num_set1 = num_set1.strip()
+        num_set2 = num_set2.strip()
         try:
             # if num != None and num!="" and int(num)<=30 and int(num)>=0:
-            if valid(num_1) and valid(num_2):
+            if valid(num_1) and valid(num_2) and set_valid(num_set1) and set_valid(num_set2):
                 num_int_1 = int(num_1)
                 num_int_2 = int(num_2)
+                num_int_set1 = int(num_set1)
+                num_int_set2 = int(num_set2)
                 frame_num.append(index)
                 score_num_1.append(num_int_1)
                 score_num_2.append(num_int_2)
-                print "PASS: ",
+                set_num_1.append(num_int_set1)
+                set_num_2.append(num_int_set2)
+                print "VALIDATION_TEST_PASS: ",
         except ValueError:
             pass
-        print "index: ", index, "; num_1:", num_1, "; num_2:", num_2
+        print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2, ";serve:", num_serve
         index+=1
 
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"

@@ -1,0 +1,132 @@
+try:
+    import Image
+except ImportError:
+    from PIL import Image
+import pytesseract
+import time
+import argparse
+import os
+import matplotlib.pyplot as plt
+
+BEST_OF=7
+TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
+TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
+DELTA_X=24      #35 for 720p, 15/8 for 360p
+DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# START_FRAME=389
+START_FRAME=36
+END_FRAME=1000
+
+def valid(num):
+    if num != None and num!="" and len(num)==1 or len(num)==2 and num[0]=='1':
+        return True
+    return False
+
+def set_valid(num):
+    if num != None and num!="" and len(num)==1 and num[0] <= '4' and num[0] >= '0':
+        return True
+    return False
+
+def find_frame_range(input_dir):
+    first = 0
+    last = 99999
+    found = False
+
+    while first<=last and not found:
+        midpoint = (first + last)//2
+        filepath = os.path.join(input_dir, 'frame_%05d.png'%midpoint)
+        filepath_next = os.path.join(input_dir, 'frame_%05d.png'%(midpoint+1))
+        if os.path.exists(filepath) and not os.path.exists(filepath_next):
+            print "START_FRAME:", 0, "\tEND_FRAME", midpoint
+            return 1, midpoint-1
+        else:
+            if not os.path.exists(filepath):
+                last = midpoint-1
+            else:
+                first = midpoint+1
+
+    return 0,0
+
+def find_num(input_png):
+    im = Image.open(input_png)
+    im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    # im_1 = Image.open(output_png_1).convert('L')
+    # im_2 = Image.open(output_png_2).convert('L')
+    # print(pytesseract.image_to_string(im, config='-psm 6 digits'))
+    CONF = '-psm 6 digits'
+    return (pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
+
+if __name__=='__main__':
+    start_time = time.time()
+    # Parse out the arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_dir", type=str, help='Path to the directory containing .png frames from the video')
+    parser.add_argument("output_dir", type=str, help='Training set storage directory. Contain two folders, one for points where the top player wins, the other one for points where the bottom player wins')
+    args = parser.parse_args()
+    args.input_dir = os.path.abspath(args.input_dir)
+    args.output_dir = os.path.abspath(args.output_dir)
+    # Set START_FRAME and END_FRAME
+    START_FRAME, END_FRAME = find_frame_range(args.input_dir)
+
+    # Actual algorithm to find the split points
+    index = START_FRAME
+    pt_start_frame = START_FRAME
+    top_player_winning_filepath = os.path.join(args.output_dir, 'top_player_winning_frames.txt')
+    bottom_player_winning_filepath = os.path.join(args.output_dir, 'bottom_player_winning_frames.txt')
+    top_player_winning_file=open(top_player_winning_filepath, 'w+')
+    bottom_player_winning_file=open(bottom_player_winning_filepath, 'w+')
+    points_top_player_win = []
+    points_bottom_player_win = []
+    prev_num1 = 0
+    prev_num2 = 0
+    input_frame_file = os.path.join(args.input_dir, 'frame_%05d.png'%index)
+    while (os.path.exists(input_frame_file) and index<=END_FRAME):
+        input_frame_file = os.path.join(args.input_dir, 'frame_%05d.png'%index)
+        num_1,num_2, num_set1, num_set2 = find_num(input_frame_file)
+        num_1 = num_1.strip()
+        num_2 = num_2.strip()
+        num_set1 = num_set1.strip()
+        num_set2 = num_set2.strip()
+        try:
+            if valid(num_1) and valid(num_2) and set_valid(num_set1) and set_valid(num_set2):
+                num_int_1 = int(num_1)
+                num_int_2 = int(num_2)
+                num_int_set1 = int(num_set1)
+                num_int_set2 = int(num_set2)
+                # if a point change occurs at this particular frame.
+                sets_sum=num_int_set1+num_int_set2
+                if (num_int_1 != prev_num1 or num_int_2 != prev_num2):
+                    if ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
+                            sets_sum < BEST_OF-1 and (sets_sum)%2==0) or
+                            (num_int_1 == prev_num1 and num_int_2 > prev_num2 and
+                            sets_sum < BEST_OF-1 and (sets_sum)%2==1)):
+                        points_top_player_win.append((pt_start_frame, index))
+                        output=str(pt_start_frame)+":"+str(index)
+                        print "write to top_player_winning_frames: ", output
+                        top_player_winning_file.write(output+'\n')
+                    elif ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
+                            sets_sum < BEST_OF-1 and (sets_sum)%2==1) or
+                            (num_int_1 == prev_num1 and num_int_2 > prev_num2 and
+                            sets_sum < BEST_OF-1 and (sets_sum)%2==0)):
+                        points_bottom_player_win.append((pt_start_frame, index))
+                        output=str(pt_start_frame)+":"+str(index)
+                        print "write to bottom_player_winning_frames: ", output
+                        bottom_player_winning_file.write(output+'\n')
+                    pt_start_frame = index
+                    prev_num1 = num_int_1
+                    prev_num2 = num_int_2
+                print "VALIDATION_TEST_PASS: ",
+            else:
+                pt_start_frame = index+1
+        except ValueError:
+            pt_start_frame = index+1
+            pass
+        print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2
+        index+=1
+    top_player_winning_file.close()
+    bottom_player_winning_file.close()
+    print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
+
