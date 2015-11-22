@@ -9,11 +9,15 @@ import os
 import matplotlib.pyplot as plt
 
 BEST_OF=7
-TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
-TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
-DELTA_X=24      #35 for 720p, 15/8 for 360p
-DELTA_Y=24      #28 for 720p, 12/4 for 360p
-# START_FRAME=389
+# TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
+# TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
+# DELTA_X=24      #35 for 720p, 15/8 for 360p
+# DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# yellow scoreboard
+TOP_LEFT_X=365  #362 for 720p, 182 for 360p
+TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
+DELTA_X=25      #35 for 720p, 15/8 for 360p
+DELTA_Y=28      #20 for 720p, 12/4 for 360p
 START_FRAME=36
 END_FRAME=1000
 
@@ -48,43 +52,52 @@ def find_frame_range(input_dir):
     return 0,0
 
 def find_num(input_png):
+    sharpness_factor = 10.0
+    brightness_factor = 10.0
     im = Image.open(input_png)
+    # player1 score
     im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    enhancer = ImageEnhance.Sharpness(im1)
+    im1 = enhancer.enhance(sharpness_factor)
+    enhancer = ImageEnhance.Brightness(im1)
+    im1 = enhancer.enhance(brightness_factor)
+    # player2 score
     im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    enhancer = ImageEnhance.Sharpness(im2)
+    im2 = enhancer.enhance(sharpness_factor)
+    enhancer = ImageEnhance.Brightness(im2)
+    im2 = enhancer.enhance(brightness_factor)
+    # player1 set score
     im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    enhancer = ImageEnhance.Sharpness(im_set1)
+    im_set1 = enhancer.enhance(sharpness_factor)
+    # player2 set score
     im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
-    # im_1 = Image.open(output_png_1).convert('L')
-    # im_2 = Image.open(output_png_2).convert('L')
-    # print(pytesseract.image_to_string(im, config='-psm 6 digits'))
+    enhancer = ImageEnhance.Sharpness(im_set2)
+    im_set2 = enhancer.enhance(sharpness_factor)
+    # Run pytesseract
     CONF = '-psm 6 digits'
     return (pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
 
-if __name__=='__main__':
+def main(input_dir, output_dir):
     start_time = time.time()
-    # Parse out the arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input_dir", type=str, help='Path to the directory containing .png frames from the video')
-    parser.add_argument("output_dir", type=str, help='Training set storage directory. Contain two folders, one for points where the top player wins, the other one for points where the bottom player wins')
-    args = parser.parse_args()
-    args.input_dir = os.path.abspath(args.input_dir)
-    args.output_dir = os.path.abspath(args.output_dir)
     # Set START_FRAME and END_FRAME
-    START_FRAME, END_FRAME = find_frame_range(args.input_dir)
+    START_FRAME, END_FRAME = find_frame_range(input_dir)
 
     # Actual algorithm to find the split points
     index = START_FRAME
     pt_start_frame = START_FRAME
-    top_player_winning_filepath = os.path.join(args.output_dir, 'top_player_winning_frames.txt')
-    bottom_player_winning_filepath = os.path.join(args.output_dir, 'bottom_player_winning_frames.txt')
+    top_player_winning_filepath = os.path.join(output_dir, 'top_player_winning_frames.txt')
+    bottom_player_winning_filepath = os.path.join(output_dir, 'bottom_player_winning_frames.txt')
     top_player_winning_file=open(top_player_winning_filepath, 'w+')
     bottom_player_winning_file=open(bottom_player_winning_filepath, 'w+')
     points_top_player_win = []
     points_bottom_player_win = []
     prev_num1 = 0
     prev_num2 = 0
-    input_frame_file = os.path.join(args.input_dir, 'frame_%05d.png'%index)
+    input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
     while (os.path.exists(input_frame_file) and index<=END_FRAME):
-        input_frame_file = os.path.join(args.input_dir, 'frame_%05d.png'%index)
+        input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
         num_1,num_2, num_set1, num_set2 = find_num(input_frame_file)
         num_1 = num_1.strip()
         num_2 = num_2.strip()
@@ -128,5 +141,15 @@ if __name__=='__main__':
         index+=1
     top_player_winning_file.close()
     bottom_player_winning_file.close()
-    print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
+    print "TRAINING_SET_CREATION.PY TAKES:"+str(time.time()-start_time)+" seconds"
+    return
+
+if __name__=='__main__':
+    # Parse out the arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_dir", type=str, help='Path to the directory containing .png frames from the video')
+    parser.add_argument("output_dir", type=str, help='Training set storage directory. Contain two folders, one for points where the top player wins, the other one for points where the bottom player wins')
+    args = parser.parse_args()
+    args.input_dir = os.path.abspath(args.input_dir)
+    args.output_dir = os.path.abspath(args.output_dir)
 

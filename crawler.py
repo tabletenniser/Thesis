@@ -31,15 +31,8 @@ def download_video(yt, path, file_name):
     # Note: If you wanted to choose the output directory, simply pass it as an
     # argument to the download method.
 
-if __name__ == '__main__':
+def main(file_name, output_dir):
     start_time = time.time()
-    parser = argparse.ArgumentParser()
-    parser.add_argument("url_file", type=str, help='Path to the url.txt file')
-    parser.add_argument("output_dir", type=str, help='Output directory where the downloaded .mp4 files go')
-    args = parser.parse_args()
-
-    file_name = args.url_file
-    print "file_name is: ", file_name
     with open(file_name) as f:
         for line in f:
             if line[0] == "#":
@@ -50,7 +43,19 @@ if __name__ == '__main__':
             print "Name: "+prev_line[2:-1]
             yt = YouTube(line)
             # download_video(yt, os.getcwd(), prev_line[2:])
-            download_video(yt, args.output_dir, prev_line[2:-1])
+            download_video(yt, output_dir, prev_line[2:-1])
             prev_line = line
-    print "TOTAL EXECUTION TIME:"+str(time.time() - start_time)+" seconds"
+    print "CRAWLER.PY TAKES:"+str(time.time() - start_time)+" seconds"
+    return
+
+if __name__ == '__main__':
+    start_time = time.time()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url_file", type=str, help='Path to the url.txt file')
+    parser.add_argument("output_dir", type=str, help='Output directory where the downloaded .mp4 files go')
+    args = parser.parse_args()
+
+    file_name = args.url_file
+    print "file_name is: ", file_name
+    main(file_name, output_dir)
 

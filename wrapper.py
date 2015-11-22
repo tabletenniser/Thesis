@@ -1,0 +1,54 @@
+import os
+import time
+import argparse
+import crawler
+import decompose_ffmpeg
+import training_set_creation
+import construct_clips_structure
+
+if __name__ == '__main__':
+    start_time = time.time()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url_file", type=str, help='Path to the url.txt file')
+    parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
+    parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
+    args = parser.parse_args()
+
+    file_name = args.url_file
+    ############### STEP 1: CRAWLER.PY ##############
+    print '\n\n'+"="*20+'STEP #1: CRAWLER.PY'+'='*20
+    mp4_video_dir = os.path.join(args.inter_dir, 'videos')
+    if not os.path.isdir(mp4_video_dir):
+        os.makedirs(mp4_video_dir)
+    crawler.main(file_name, mp4_video_dir)
+    ############### STEP 2: DECOMPOSE_TO_FRAMES.PY ##############
+    print '\n\n'+"="*15+'STEP #2: DECOMPOSE_TO_FRAMES.PY'+'='*15
+    frames_dir = os.path.join(args.inter_dir, 'frames')
+    if not os.path.isdir(frames_dir):
+        os.makedirs(frames_dir)
+    decompose_ffmpeg.main(mp4_video_dir, frames_dir)
+    ############### STEP 3: TRAINING_SET_CREATION.PY ##############
+    ############### STEP 4: CONSTRUCT_CLIPS_STRUCTURE.PY ##############
+    training_data_dir = os.path.join(args.inter_dir, 'training_data')
+    if not os.path.isdir(training_data_dir):
+        os.makedirs(training_data_dir)
+    for fn in os.listdir(frames_dir):
+        print '\n\n'+"="*15+'STEP #3: TRAINING_SET_CREATION.PY'+'='*15
+        input_frame_dir = os.path.join(frames_dir, fn)
+        if not os.path.isdir(input_frame_dir):
+            continue
+        print "folder: ", input_frame_dir
+        result_subdir = os.path.join(input_frame_dir, 'results')
+        if not os.path.isdir(result_subdir):
+            os.makedirs(result_subdir)
+        training_set_creation.main(input_frame_dir, result_subdir)
+
+        print '\n\n'+"="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15
+        # Call construct_clips_structure.py
+        train_subdir = os.path.join(training_data_dir, fn)
+        if not os.path.isdir(train_subdir):
+            os.makedirs(train_subdir)
+        video_file = os.path.join(mp4_video_dir, str(fn)+'.mp4')
+        construct_clips_structure.main(input_frame_dir, video_file, train_subdir)
+
+
