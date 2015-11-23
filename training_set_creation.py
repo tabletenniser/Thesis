@@ -2,6 +2,7 @@ try:
     import Image
 except ImportError:
     from PIL import Image
+from PIL import ImageEnhance
 import pytesseract
 import time
 import argparse
