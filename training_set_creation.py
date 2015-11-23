@@ -10,15 +10,15 @@ import os
 import matplotlib.pyplot as plt
 
 BEST_OF=7
-# TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
-# TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
-# DELTA_X=24      #35 for 720p, 15/8 for 360p
-# DELTA_Y=24      #28 for 720p, 12/4 for 360p
+TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
+TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
+DELTA_X=24      #35 for 720p, 15/8 for 360p
+DELTA_Y=24      #28 for 720p, 12/4 for 360p
 # yellow scoreboard
-TOP_LEFT_X=365  #362 for 720p, 182 for 360p
-TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
-DELTA_X=25      #35 for 720p, 15/8 for 360p
-DELTA_Y=28      #20 for 720p, 12/4 for 360p
+# TOP_LEFT_X=365  #362 for 720p, 182 for 360p
+# TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
+# DELTA_X=25      #35 for 720p, 15/8 for 360p
+# DELTA_Y=28      #20 for 720p, 12/4 for 360p
 START_FRAME=36
 END_FRAME=1000
 
