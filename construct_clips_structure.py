@@ -41,6 +41,7 @@ def main(input_frame, input_video, output_dir):
     bottom_player_winning_file = os.path.join(input_frame, 'results', 'bottom_player_winning_frames.txt')
     output_top_player_winning_dir = os.path.join(output_dir, 'top_player_winning')
     output_bottom_player_winning_dir = os.path.join(output_dir, 'bottom_player_winning')
+    start_time = time.time()
 
     # Copy cut video clips and frame images over.
     create_video_clip_and_copy_frames(top_player_winning_file, input_frame, input_video, output_top_player_winning_dir)
@@ -49,7 +50,6 @@ def main(input_frame, input_video, output_dir):
     return
 
 if __name__ == '__main__':
-    start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("input_frame", type=str, help='Path to the directory where the frames locate. Should also contain a /results folder containing top_player_winning_frames.txt and bottom_player_winning_frames.txt inside')
     parser.add_argument("input_video", type=str, help='Path to the original video clip.')
