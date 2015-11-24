@@ -3,7 +3,7 @@ import time
 import argparse
 import crawler
 import decompose_ffmpeg
-import training_set_creation
+import training_set_creation_knn
 import construct_clips_structure
 
 if __name__ == '__main__':
@@ -53,7 +53,7 @@ if __name__ == '__main__':
             result_subdir = os.path.join(input_frame_dir, 'results')
             if not os.path.isdir(result_subdir):
                 os.makedirs(result_subdir)
-            training_set_creation.main(input_frame_dir, result_subdir)
+            training_set_creation_knn.main(input_frame_dir, result_subdir)
 
             print '\n\n'+"="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15
             # Call construct_clips_structure.py
