@@ -9,18 +9,18 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 
-# TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
-# TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
-# DELTA_X=24      #35 for 720p, 15/8 for 360p
-# DELTA_Y=24      #28 for 720p, 12/4 for 360p
+TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
+TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
+DELTA_X=24      #35 for 720p, 15/8 for 360p
+DELTA_Y=24      #28 for 720p, 12/4 for 360p
 # yellow scoreboard
-TOP_LEFT_X=365  #362 for 720p, 182 for 360p
-TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
-DELTA_X=25      #35 for 720p, 15/8 for 360p
-DELTA_Y=28      #20 for 720p, 12/4 for 360p
+# TOP_LEFT_X=365  #362 for 720p, 182 for 360p
+# TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
+# DELTA_X=25      #35 for 720p, 15/8 for 360p
+# DELTA_Y=28      #20 for 720p, 12/4 for 360p
 # START_FRAME=389
-START_FRAME=100
-END_FRAME=1000
+START_FRAME=104
+END_FRAME=3000
 
 def valid(num):
     if num != None and num!="" and len(num)==1 or len(num)==2 and num[0]=='1':
@@ -33,31 +33,31 @@ def set_valid(num):
     return False
 
 def find_num(input_png, output_serve, output_score_1, output_score_2, output_set_1, output_set_2):
-    sharpness_factor = 10.0
-    brightness_factor = 10.0
+    # sharpness_factor = 10.0
+    # brightness_factor = 10.0
     im = Image.open(input_png)
     # im = Image.open(input_png).convert('L')
     im_serve = im.crop((TOP_LEFT_X-DELTA_X, TOP_LEFT_Y, TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y))
     # im_serve.save(output_serve)
     im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
-    enhancer = ImageEnhance.Sharpness(im1)
-    im1 = enhancer.enhance(sharpness_factor)
-    enhancer = ImageEnhance.Brightness(im1)
-    im1 = enhancer.enhance(brightness_factor)
+    # enhancer = ImageEnhance.Sharpness(im1)
+    # im1 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Brightness(im1)
+    # im1 = enhancer.enhance(brightness_factor)
     im1.save(output_score_1)
     im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
-    enhancer = ImageEnhance.Sharpness(im2)
-    im2 = enhancer.enhance(sharpness_factor)
-    enhancer = ImageEnhance.Brightness(im2)
-    im2 = enhancer.enhance(brightness_factor)
+    # enhancer = ImageEnhance.Sharpness(im2)
+    # im2 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Brightness(im2)
+    # im2 = enhancer.enhance(brightness_factor)
     im2.save(output_score_2)
     im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
-    enhancer = ImageEnhance.Sharpness(im_set1)
-    im_set1 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Sharpness(im_set1)
+    # im_set1 = enhancer.enhance(sharpness_factor)
     im_set1.save(output_set_1)
     im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
-    enhancer = ImageEnhance.Sharpness(im_set2)
-    im_set2 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Sharpness(im_set2)
+    # im_set2 = enhancer.enhance(sharpness_factor)
     im_set2.save(output_set_2)
     # im_1 = Image.open(output_png_1).convert('L')
     # im_2 = Image.open(output_png_2).convert('L')
@@ -112,7 +112,7 @@ if __name__=='__main__':
         except ValueError:
             pass
         print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2, ";serve:", num_serve
-        index+=1
+        index+=100
 
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
 
