@@ -10,8 +10,8 @@ import os
 import matplotlib.pyplot as plt
 
 BEST_OF=7
-TOP_LEFT_X=375  #362/6 for 720p, 182 for 360p
-TOP_LEFT_Y=594  #590 for 720p, 295/6 for 360p
+TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
+TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
 DELTA_X=24      #35 for 720p, 15/8 for 360p
 DELTA_Y=24      #28 for 720p, 12/4 for 360p
 # yellow scoreboard
@@ -58,24 +58,24 @@ def find_num(input_png):
     im = Image.open(input_png)
     # player1 score
     im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y))
-    enhancer = ImageEnhance.Sharpness(im1)
-    im1 = enhancer.enhance(sharpness_factor)
-    enhancer = ImageEnhance.Brightness(im1)
-    im1 = enhancer.enhance(brightness_factor)
+    # enhancer = ImageEnhance.Sharpness(im1)
+    # im1 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Brightness(im1)
+    # im1 = enhancer.enhance(brightness_factor)
     # player2 score
     im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
-    enhancer = ImageEnhance.Sharpness(im2)
-    im2 = enhancer.enhance(sharpness_factor)
-    enhancer = ImageEnhance.Brightness(im2)
-    im2 = enhancer.enhance(brightness_factor)
+    # enhancer = ImageEnhance.Sharpness(im2)
+    # im2 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Brightness(im2)
+    # im2 = enhancer.enhance(brightness_factor)
     # player1 set score
     im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y))
-    enhancer = ImageEnhance.Sharpness(im_set1)
-    im_set1 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Sharpness(im_set1)
+    # im_set1 = enhancer.enhance(sharpness_factor)
     # player2 set score
     im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
-    enhancer = ImageEnhance.Sharpness(im_set2)
-    im_set2 = enhancer.enhance(sharpness_factor)
+    # enhancer = ImageEnhance.Sharpness(im_set2)
+    # im_set2 = enhancer.enhance(sharpness_factor)
     # Run pytesseract
     CONF = '-psm 6 digits'
     return (pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
