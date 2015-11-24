@@ -145,7 +145,7 @@ if __name__=='__main__':
                 score_num_2.append(num_int_2)
                 set_num_1.append(num_int_set1)
                 set_num_2.append(num_int_set2)
-                print "VALIDATION_TEST_PASS: ",
+                print "\nVALIDATION_TEST_PASS: ",
         except ValueError:
             pass
         print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2, ";serve:", num_serve
