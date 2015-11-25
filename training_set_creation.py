@@ -8,17 +8,25 @@ import time
 import argparse
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 BEST_OF=7
-TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
-TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
-DELTA_X=24      #35 for 720p, 15/8 for 360p
-DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
+# TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
+# DELTA_X=24      #35 for 720p, 15/8 for 360p
+# DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# long scoreboard
+# TOP_LEFT_X=505
+# TOP_LEFT_Y=615
+# TOP_LEFT_SET_X=458
+# DELTA_X=40
+# DELTA_Y=40
 # yellow scoreboard
-# TOP_LEFT_X=365  #362 for 720p, 182 for 360p
-# TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
-# DELTA_X=25      #35 for 720p, 15/8 for 360p
-# DELTA_Y=28      #20 for 720p, 12/4 for 360p
+TOP_LEFT_X=365  #362 for 720p, 182 for 360p
+TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
+TOP_LEFT_SET_X=390
+DELTA_X=25      #35 for 720p, 15/8 for 360p
+DELTA_Y=28      #20 for 720p, 12/4 for 360p
 START_FRAME=36
 END_FRAME=1000
 
@@ -53,29 +61,42 @@ def find_frame_range(input_dir):
     return 0,0
 
 def find_num(input_png):
-    sharpness_factor = 10.0
-    brightness_factor = 10.0
+    # sharpness_factor = 10.0
+    # brightness_factor = 10.0
+    bw_threshold = 0.3
     im = Image.open(input_png)
     # player1 score
-    im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
+    im_max=np.amax(np.asarray(im1))
+    im_min=np.amin(np.asarray(im1))
+    im1 = im1.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
     # enhancer = ImageEnhance.Sharpness(im1)
     # im1 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im1)
     # im1 = enhancer.enhance(brightness_factor)
     # player2 score
-    im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im2)
     # im2 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im2)
     # im2 = enhancer.enhance(brightness_factor)
+    im_max=np.amax(np.asarray(im2))
+    im_min=np.amin(np.asarray(im2))
+    im2 = im2.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
     # player1 set score
-    im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y))
+    im_set1 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set1)
     # im_set1 = enhancer.enhance(sharpness_factor)
+    im_max=np.amax(np.asarray(im_set1))
+    im_min=np.amin(np.asarray(im_set1))
+    im_set1 = im_set1.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
     # player2 set score
-    im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y))
+    im_set2 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set2)
     # im_set2 = enhancer.enhance(sharpness_factor)
+    im_max=np.amax(np.asarray(im_set2))
+    im_min=np.amin(np.asarray(im_set2))
+    im_set2 = im_set2.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
     # Run pytesseract
     CONF = '-psm 6 digits'
     return (pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
@@ -112,7 +133,7 @@ def main(input_dir, output_dir):
                 num_int_set2 = int(num_set2)
                 # if a point change occurs at this particular frame.
                 sets_sum=num_int_set1+num_int_set2
-                if (num_int_1 != prev_num1 or num_int_2 != prev_num2):
+                if index-pt_start_frame > 5 and (num_int_1 != prev_num1 or num_int_2 != prev_num2):
                     if ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
                             sets_sum < BEST_OF-1 and (sets_sum)%2==0) or
                             (num_int_1 == prev_num1 and num_int_2 > prev_num2 and

@@ -16,16 +16,17 @@ import numpy as np
 # DELTA_X=24      #35 for 720p, 15/8 for 360p
 # DELTA_Y=24      #28 for 720p, 12/4 for 360p
 # long scoreboard
-TOP_LEFT_X=505
-TOP_LEFT_Y=615
-TOP_LEFT_SET_X=458
-DELTA_X=40
-DELTA_Y=40
+# TOP_LEFT_X=505
+# TOP_LEFT_Y=615
+# TOP_LEFT_SET_X=458
+# DELTA_X=40
+# DELTA_Y=40
 # yellow scoreboard
-# TOP_LEFT_X=365  #362 for 720p, 182 for 360p
-# TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
-# DELTA_X=25      #35 for 720p, 15/8 for 360p
-# DELTA_Y=28      #20 for 720p, 12/4 for 360p
+TOP_LEFT_X=365  #362 for 720p, 182 for 360p
+TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
+TOP_LEFT_SET_X=390
+DELTA_X=25      #35 for 720p, 15/8 for 360p
+DELTA_Y=28      #20 for 720p, 12/4 for 360p
 # START_FRAME=389
 START_FRAME=104
 END_FRAME=3000
