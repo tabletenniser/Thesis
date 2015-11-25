@@ -15,10 +15,16 @@ def copy_frames_to_destination(src_dir, destination_dir, start_index):
     index = start_index
     frame_dirs = [os.path.join(src_dir, d) for d in sorted(os.listdir(src_dir)) if os.path.isdir(os.path.join(src_dir, d))]
     for frame_dir in frame_dirs:
+        basename = os.path.basename(os.path.normpath(frame_dir))
+        mp4_file_src = os.path.join(src_dir, basename+'.mp4')
+        if os.path.exists(mp4_file_src):
+            mp4_file_dest = os.path.join(destination_dir, 'point_%05d.mp4'%index)
+            shutil.copy(mp4_file_src, mp4_file_dest)
+            print 'Copy mp4 file ', mp4_file_src, ' to destionation', mp4_file_dest
         dest_dir = os.path.join(destination_dir, 'point_%05d'%index)
         if os.path.exists(dest_dir):
             shutil.rmtree(dest_dir)
-        print 'Copy ', frame_dir, ' to destionation', dest_dir
+        print 'Copy folder ', frame_dir, ' to destionation', dest_dir
         shutil.copytree(frame_dir, dest_dir)
         index+=1
     return index+1
@@ -32,18 +38,18 @@ def main(input_dir, output_dir):
     bottom_winning_destination_dir = os.path.join(output_dir, BOTTOM_WINNING_DIRECTORY)
     create_dir_if_not_exist(top_winning_destination_dir)
     create_dir_if_not_exist(bottom_winning_destination_dir)
-    print 'top_winning_destination_dir: ', top_winning_destination_dir
-    print 'bottom_winning_destination_dir: ', bottom_winning_destination_dir
+    # print 'top_winning_destination_dir: ', top_winning_destination_dir
+    # print 'bottom_winning_destination_dir: ', bottom_winning_destination_dir
 
     video_dirs = [os.path.join(input_dir, f) for f in sorted(os.listdir(input_dir)) if os.path.isdir(os.path.join(input_dir, f))]
-    print video_dirs
+    # print video_dirs
     pt_index_top = 1
     pt_index_bottom = 1
     for video_dir in video_dirs:
         top_winning_source_dir = os.path.join(video_dir, TOP_WINNING_DIRECTORY)
         bottom_winning_source_dir = os.path.join(video_dir, BOTTOM_WINNING_DIRECTORY)
-        print 'top_winning_source_dir: ', top_winning_source_dir
-        print 'bottom_winning_source_dir: ', bottom_winning_source_dir
+        # print 'top_winning_source_dir: ', top_winning_source_dir
+        # print 'bottom_winning_source_dir: ', bottom_winning_source_dir
         pt_index_top = copy_frames_to_destination(top_winning_source_dir, top_winning_destination_dir, pt_index_top)
         pt_index_bottom = copy_frames_to_destination(bottom_winning_source_dir, bottom_winning_destination_dir, pt_index_bottom)
 
