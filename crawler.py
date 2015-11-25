@@ -16,6 +16,9 @@ from pprint import pprint
 #  <Video: VP8 (.webm) - 480p>]
 
 def download_video(yt, path, file_name):
+    if os.path.exists(os.path.join(path, file_name+'.mp4')):
+        print 'WARNING: file ', os.path.join(path, file_name+'.mp4'), ' already exists. SKIP!!!'
+        return
     yt.set_filename(file_name)
 
     # print(yt.filter('mp4')[-1])
