@@ -8,11 +8,19 @@ import time
 import argparse
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
-TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
-TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
-DELTA_X=24      #35 for 720p, 15/8 for 360p
-DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# white scoreboard from Sweden Open
+# TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
+# TOP_LEFT_Y=595  #590 for 720p, 295/6 for 360p
+# DELTA_X=24      #35 for 720p, 15/8 for 360p
+# DELTA_Y=24      #28 for 720p, 12/4 for 360p
+# long scoreboard
+TOP_LEFT_X=505
+TOP_LEFT_Y=615
+TOP_LEFT_SET_X=458
+DELTA_X=40
+DELTA_Y=40
 # yellow scoreboard
 # TOP_LEFT_X=365  #362 for 720p, 182 for 360p
 # TOP_LEFT_Y=605  #590 for 720p, 295/6 for 360p
@@ -33,10 +41,9 @@ def set_valid(num):
     return False
 
 def find_num(input_png, output_serve, output_score_1, output_score_2, output_set_1, output_set_2):
-    sharpness_factor = 0.0
-    brightness_factor = 0.0
-    # sharpness_factor = 10.0
-    # brightness_factor = 10.0
+    sharpness_factor = 2.0
+    brightness_factor = 1.2
+    bw_threshold = 0.3
     im = Image.open(input_png)
     # im = Image.open(input_png).convert('L')
     im_serve = im.crop((TOP_LEFT_X-DELTA_X, TOP_LEFT_Y, TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y))
@@ -46,20 +53,35 @@ def find_num(input_png, output_serve, output_score_1, output_score_2, output_set
     # im1 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im1)
     # im1 = enhancer.enhance(brightness_factor)
+    im_max=np.amax(np.asarray(im1))
+    im_min=np.amin(np.asarray(im1))
+    im1 = im1.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
     im1.save(output_score_1)
     im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im2)
     # im2 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im2)
     # im2 = enhancer.enhance(brightness_factor)
+    im_max=np.amax(np.asarray(im2))
+    im_min=np.amin(np.asarray(im2))
+    im2 = im2.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
     im2.save(output_score_2)
-    im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
+    # im_set1 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
+    im_set1 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set1)
     # im_set1 = enhancer.enhance(sharpness_factor)
+    im_max=np.amax(np.asarray(im_set1))
+    im_min=np.amin(np.asarray(im_set1))
+    # print im_max, im_min, (im_max-(im_max-im_min)*(bw_threshold))
+    im_set1 = im_set1.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
     im_set1.save(output_set_1)
-    im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
+    # im_set2 = im.crop((TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+2*DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
+    im_set2 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set2)
     # im_set2 = enhancer.enhance(sharpness_factor)
+    im_max=np.amax(np.asarray(im_set2))
+    im_min=np.amin(np.asarray(im_set2))
+    im_set2 = im_set2.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
     im_set2.save(output_set_2)
     # im_1 = Image.open(output_png_1).convert('L')
     # im_2 = Image.open(output_png_2).convert('L')
@@ -114,7 +136,7 @@ if __name__=='__main__':
         except ValueError:
             pass
         print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2, ";serve:", num_serve
-        index+=100
+        index+=5
 
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
 
