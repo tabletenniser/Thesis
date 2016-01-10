@@ -6,8 +6,21 @@ import decompose_ffmpeg
 import training_set_creation_knn_new
 import construct_clips_structure
 import move_training_set
+import logging
+
+def init_logging():
+    FORMAT = "[%(filename)s:%(lineno)s - %(funcName)15s()] %(levelname)s:%(message)s"
+    # FORMAT = "%(asctime)s %(levelname)s:\t%(message)s"
+    logging.basicConfig(filename='wrapper_new.log', format=FORMAT, datefmt='%m/%d %H:%M:%S', level=logging.DEBUG)
+    logging.info('PROGRAM STARTS')
+
+def create_folder_if_not_exist(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    return
 
 if __name__ == '__main__':
+    init_logging()
     start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("url_file", type=str, help='Path to the url.txt file')
@@ -21,19 +34,17 @@ if __name__ == '__main__':
     file_name = args.url_file
     ############### STEP 1: CRAWLER.PY ##############
     if '1' in args.steps:
-        print '\n\n'+"="*20+'STEP #1: CRAWLER.PY'+'='*20
+        logging.info("="*20+'STEP #1: CRAWLER.PY'+'='*20)
         mp4_video_dir = os.path.join(args.inter_dir, 'videos')
-        if not os.path.isdir(mp4_video_dir):
-            os.makedirs(mp4_video_dir)
+        create_folder_if_not_exist(mp4_video_dir)
         crawler.main(file_name, mp4_video_dir)
-    ############### STEP 2: DECOMPOSE_TO_FRAMES.PY ##############
+    ############### STEP 2: DECOMPOSE_FFMPEG.PY ##############
     if '2' in args.steps:
         if not 'mp4_video_dir' in locals() and not 'mp4_video_dir' in globals():
             mp4_video_dir = args.mp4_video_dir
-        print '\n\n'+"="*15+'STEP #2: DECOMPOSE_TO_FRAMES.PY'+'='*15
+        logging.info("="*15+'STEP #2: DECOMPOSE_FFMPEG.PY'+'='*15)
         frames_dir = os.path.join(args.inter_dir, 'frames')
-        if not os.path.isdir(frames_dir):
-            os.makedirs(frames_dir)
+        create_folder_if_not_exist(frames_dir)
         decompose_ffmpeg.main(mp4_video_dir, frames_dir)
     ############### STEP 3: TRAINING_SET_CREATION.PY ##############
     ############### STEP 4: CONSTRUCT_CLIPS_STRUCTURE.PY ##############
@@ -44,28 +55,24 @@ if __name__ == '__main__':
             frames_dir = args.frames_dir
         training_data_dir = os.path.join(args.inter_dir, 'classified_data')
         scores_dir = os.path.join(args.inter_dir, 'scores_images')
-        if not os.path.isdir(training_data_dir):
-            os.makedirs(training_data_dir)
-        if not os.path.isdir(scores_dir):
-            os.makedirs(scores_dir)
+        create_folder_if_not_exist(training_data_dir)
+        create_folder_if_not_exist(scores_dir)
         for fn in os.listdir(frames_dir):
-            print '\n\n'+"="*15+'STEP #3: TRAINING_SET_CREATION.PY'+'='*15
+            logging.info("="*15+'STEP #3: TRAINING_SET_CREATION.PY'+'='*15)
             input_frame_dir = os.path.join(frames_dir, fn)
             if not os.path.isdir(input_frame_dir):
                 continue
-            print "folder: ", input_frame_dir
+            logging.info("input frame folder: %s", input_frame_dir)
             result_subdir = os.path.join(input_frame_dir, 'results')
-            if not os.path.isdir(result_subdir):
-                os.makedirs(result_subdir)
+            create_folder_if_not_exist(result_subdir)
             score_subdir = os.path.join(scores_dir, fn)
-            if not os.path.isdir(score_subdir):
-                os.makedirs(score_subdir)
+            create_folder_if_not_exist(score_subdir)
             video_metadata = input_frame_dir.split('_')
             top_left_x, top_left_y, delta_x, delta_y = video_metadata[-5], video_metadata[-4], video_metadata[-3], video_metadata[-2]
             is_top_player_top = video_metadata[-1] == 't'
-            training_set_creation_knn_new.main(input_frame_dir, score_subdir, result_subdir, int(top_left_x), int(top_left_y), int(delta_x), int(delta_y), is_top_player_top)
+            training_set_creation_knn_new.main(input_frame_dir, score_subdir, result_subdir, int(top_left_x), int(top_left_y), int(delta_x), int(delta_y), is_top_player_top, debug=True)
 
-            print '\n\n'+"="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15
+            logging.info("="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15)
             # Call construct_clips_structure.py
             train_subdir = os.path.join(training_data_dir, fn)
             if not os.path.isdir(train_subdir):
@@ -74,5 +81,6 @@ if __name__ == '__main__':
             construct_clips_structure.main(input_frame_dir, video_file, train_subdir)
     ############### STEP 5: MOVE_TRAINING_SET.PY ##############
     if '5' in args.steps:
+        logging.info("="*15+'STEP #5: MOVE_TRAINING_SET.PY'+'='*15)
         move_training_set.main(training_data_dir, args.output_dir)
 

@@ -4,6 +4,7 @@ import time
 import argparse
 from pytube.utils import print_status
 from pprint import pprint
+import logging
 
 # [<Video: MPEG-4 Visual (.3gp) - 144p>,
 #  <Video: MPEG-4 Visual (.3gp) - 240p>,
@@ -17,7 +18,7 @@ from pprint import pprint
 
 def download_video(yt, path, file_name):
     if os.path.exists(os.path.join(path, file_name+'.mp4')):
-        print 'WARNING: file ', os.path.join(path, file_name+'.mp4'), ' already exists. SKIP!!!'
+        logging.WARNING('WARNING: file %s already exists. Skipped!', str(os.path.join(path, file_name+'.mp4')))
         return
     yt.set_filename(file_name)
 
@@ -30,6 +31,7 @@ def download_video(yt, path, file_name):
         # yt.videos[0].download(path=os.getcwd(), on_progress=print_status)
         yt.get('mp4', '720p').download(path=path, on_progress=print_status)
     except KeyboardInterrupt:
+        logging.error("Download interrupted.")
         print("Download interrupted.")
     # Note: If you wanted to choose the output directory, simply pass it as an
     # argument to the download method.
@@ -41,14 +43,14 @@ def main(file_name, output_dir):
             if line[0] == "#":
                 prev_line = line
                 continue
-            print "========= DOWNLOAD YOUTUBE VIDEO ========="
-            print "Link: "+line[:-1]
-            print "Name: "+prev_line[2:-1]
+            logging.info("========= DOWNLOAD YOUTUBE VIDEO =========")
+            logging.info("Link: %s", str(line[:-1]))
+            logging.info("Name: %s", str(prev_line[2:-1]))
             yt = YouTube(line)
             # download_video(yt, os.getcwd(), prev_line[2:])
             download_video(yt, output_dir, prev_line[2:-1])
             prev_line = line
-    print "CRAWLER.PY TAKES:"+str(time.time() - start_time)+" seconds"
+    logging.info("CRAWLER.PY TAKES:"+str(time.time() - start_time)+" seconds")
     return
 
 if __name__ == '__main__':

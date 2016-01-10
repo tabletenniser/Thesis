@@ -2,6 +2,7 @@ import argparse
 import os
 # import subprocess
 import time
+import logging
 
 # Take 4 .png iamges per second
 SAMPLE_RATE = 4
@@ -10,7 +11,7 @@ SAMPLE_RATE = 4
 def extract_frames(video_path, output_dir):
     output_files = os.path.join(output_dir, "frame_%05d.png")
     # cmd = ["ffmpeg", "-i", video_path, "-r", str(SAMPLE_RATE), output_files]
-    # print "command running is", cmd
+    logging.debug("command running is %s", str(cmd))
     # subprocess.call(cmd, shell=True)
     cmd = "ffmpeg -i "+video_path+" -r "+str(SAMPLE_RATE)+" "+output_files
     os.system(cmd)
@@ -22,15 +23,15 @@ def main(input_dir, output_dir):
         video_file_path = os.path.join(input_dir, fn)
         video_file_name, video_file_extension = os.path.splitext(video_file_path)
         if not video_file_extension==".mp4":
-            print "Skip non .mp4 file", video_file_path
+            logging.info("Skip non .mp4 file", video_file_path)
             continue
-        print "Input video path is: ", video_file_path
+        logging.info("Input video path is: ", video_file_path)
         output_path = os.path.join(output_dir, os.path.basename(video_file_name))
-        print "Output path is: ", output_path
+        logging.info("Output path is: ", output_path)
         if not os.path.isdir(output_path):
             os.makedirs(output_path)
         extract_frames(video_file_path, output_path)
-    print "DECOMPOSE_TO_FRAMES.PY TAKES:"+str(time.time()-start_time)+" seconds"
+    logging.info("DECOMPOSE_TO_FRAMES.PY TAKES:"+str(time.time()-start_time)+" seconds")
     return
 
 if __name__ == '__main__':

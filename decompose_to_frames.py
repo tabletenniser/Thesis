@@ -2,23 +2,23 @@ import cv2
 import argparse
 import os
 import time
+import logging
 
 FRAME_GAP = 1
 START_FRAME = 100
 
 # video_path is a .mp4 file; output_dir is the directory containing all the output frames.
 def extract_frames(video_path, output_dir):
-    print "Writing video: "+str(video_path)+" to "+str(output_dir)
+    logging.info("Writing video: "+str(video_path)+" to "+str(output_dir))
     vidcap = cv2.VideoCapture(video_path)
     # image is an array of array of [R,G,B] values]
     success,image = vidcap.read()
     count = START_FRAME;
     while success:
         success,image = vidcap.read()
-        # print "count is"+str(count)
         if count % FRAME_GAP ==0:
             file_path = os.path.join(output_dir, "frame%d.jpg" % count)
-            print "Writing to file"+str(file_path)
+            logging.info("Writing to file"+str(file_path))
             cv2.imwrite(file_path, image)     # save frame as JPEG file
         if cv2.waitKey(10) == 27:             # exit if Escape is hit
             break

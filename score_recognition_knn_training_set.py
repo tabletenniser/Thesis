@@ -153,4 +153,4 @@ if __name__=='__main__':
         print result_frame[n], result_score_1[n], result_score_2[n]
     plt.plot(result_frame, result_score_1, "r--", result_frame, result_score_2, "g+")
     plt.ylim([-1, 12])
-    plt.show()
+    p'',lt.show()

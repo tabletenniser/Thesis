@@ -9,6 +9,8 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
+
 
 BEST_OF=7
 # TOP_LEFT_X=377  #362/6 for 720p, 182 for 360p
@@ -50,7 +52,7 @@ def find_frame_range(input_dir):
         filepath = os.path.join(input_dir, 'frame_%05d.png'%midpoint)
         filepath_next = os.path.join(input_dir, 'frame_%05d.png'%(midpoint+1))
         if os.path.exists(filepath) and not os.path.exists(filepath_next):
-            print "START_FRAME:", 0, "\tEND_FRAME", midpoint
+            logging.info("binary search result - START_FRAME: %d\tEND_FRAME: %d", 0, midpoint)
             return 1, midpoint-1
         else:
             if not os.path.exists(filepath):
@@ -140,7 +142,7 @@ def main(input_dir, output_dir):
                             sets_sum < BEST_OF-1 and (sets_sum)%2==1)):
                         points_top_player_win.append((pt_start_frame, index))
                         output=str(pt_start_frame)+":"+str(index)
-                        print "write to top_player_winning_frames: ", output
+                        logging.info("write to top_player_winning_frames: %s", output)
                         top_player_winning_file.write(output+'\n')
                     elif ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
                             sets_sum < BEST_OF-1 and (sets_sum)%2==1) or
@@ -148,22 +150,21 @@ def main(input_dir, output_dir):
                             sets_sum < BEST_OF-1 and (sets_sum)%2==0)):
                         points_bottom_player_win.append((pt_start_frame, index))
                         output=str(pt_start_frame)+":"+str(index)
-                        print "write to bottom_player_winning_frames: ", output
+                        logging.info("write to bottom_player_winning_frames: %s", output)
                         bottom_player_winning_file.write(output+'\n')
                     pt_start_frame = index
                     prev_num1 = num_int_1
                     prev_num2 = num_int_2
-                print "VALIDATION_TEST_PASS: ",
             else:
                 pt_start_frame = index+1
         except ValueError:
             pt_start_frame = index+1
             pass
-        print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2
+        logging.debug("index:%d; score_1:%d; set_1:%d; set_2:%d", index, num_1, num_2, num_set1, num_set2)
         index+=1
     top_player_winning_file.close()
     bottom_player_winning_file.close()
-    print "TRAINING_SET_CREATION.PY TAKES:"+str(time.time()-start_time)+" seconds"
+    logging.info("TRAINING_SET_CREATION.PY TAKES:"+str(time.time()-start_time)+" seconds")
     return
 
 if __name__=='__main__':

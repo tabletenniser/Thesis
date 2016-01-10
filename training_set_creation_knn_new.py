@@ -11,6 +11,7 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
+import logging
 
 TRAINING_SET_PATH = 'training_set'
 TRAINING_SET_SET_PATH = 'training_set_set'
@@ -69,7 +70,7 @@ def find_frame_range(input_dir):
         filepath = os.path.join(input_dir, 'frame_%05d.png'%midpoint)
         filepath_next = os.path.join(input_dir, 'frame_%05d.png'%(midpoint+1))
         if os.path.exists(filepath) and not os.path.exists(filepath_next):
-            print "START_FRAME:", 0, "\tEND_FRAME", midpoint
+            logging.info("binary search result - START_FRAME: %d\tEND_FRAME: %d", 0, midpoint)
             return 1, midpoint-1
         else:
             if not os.path.exists(filepath):
@@ -121,7 +122,7 @@ def find_num(score_dir, index, knn_neigh, knn_neigh_set, input_png, top_left_x, 
             conv_to_num(knn_neigh_set, im_set2))
 
 # writes classified frames in .txt format to output_dir; cropped score images to score_dir
-def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delta_y, is_top_player_top):
+def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delta_y, is_top_player_top, debug=False):
     start_time = time.time()
     # Set START_FRAME and END_FRAME
     START_FRAME, END_FRAME = find_frame_range(input_dir)
@@ -143,8 +144,8 @@ def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delt
     while (os.path.exists(input_frame_file) and index<=END_FRAME):
         input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
         num_1, num_2, num_set1, num_set2 = find_num(score_dir, index, knn_neigh, knn_neigh_set, input_frame_file, top_left_x, top_left_y, delta_x, delta_y)
+        logging.debug("index:%d; score_1:%s; score_2:%s; set_1:%s; set_2:%s", index, str(num_1), str(num_2), str(num_set1), str(num_set2))
         if num_1[1] < 0.9 or num_2[1] < 0.9 or num_set1[1] < 0.9 or num_set2[1] < 0.9:
-            # print "index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2
             pt_start_frame = index+1
             index += 1
             continue
@@ -162,12 +163,12 @@ def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delt
                 if is_top_player_top == True:
                     points_top_player_win.append((pt_start_frame, index))
                     output=str(pt_start_frame)+":"+str(index)
-                    print "write to top_player_winning_frames: ", output
+                    logging.info("write to top_player_winning_frames: %s", output)
                     top_player_winning_file.write(output+'\n')
                 else:
                     points_bottom_player_win.append((pt_start_frame, index))
                     output=str(pt_start_frame)+":"+str(index)
-                    print "write to bottom_player_winning_frames: ", output
+                    logging.info("write to bottom_player_winning_frames: %s", output)
                     bottom_player_winning_file.write(output+'\n')
             elif ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
                     sets_sum < BEST_OF-1 and (sets_sum)%2==1) or
@@ -176,21 +177,21 @@ def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delt
                 if is_top_player_top == True:
                     points_bottom_player_win.append((pt_start_frame, index))
                     output=str(pt_start_frame)+":"+str(index)
-                    print "write to bottom_player_winning_frames: ", output
+                    logging.info("write to bottom_player_winning_frames: %s", output)
                     bottom_player_winning_file.write(output+'\n')
                 else:
                     points_top_player_win.append((pt_start_frame, index))
                     output=str(pt_start_frame)+":"+str(index)
-                    print "write to top_player_winning_frames: ", output
+                    logging.info("write to top_player_winning_frames: %s", output)
                     top_player_winning_file.write(output+'\n')
             pt_start_frame = index
             prev_num1 = num_int_1
             prev_num2 = num_int_2
-            #print "VALIDATION_TEST_PASS - index:", index, ";score_1:", num_1, ";score_2:", num_2, ";set_1:", num_set1, ";set_2:", num_set2
+            logging.debug("VALIDATION_TEST_PASS - index:%d; score_1:%d; score_2:%d; set_1:%d; set_2:%d", index, num_1, num_2, num_set1, num_set2)
         index+=1
     top_player_winning_file.close()
     bottom_player_winning_file.close()
-    print "TRAINING_SET_CREATION.PY TAKES:"+str(time.time()-start_time)+" seconds"
+    logging.info("TRAINING_SET_CREATION.PY TAKES:"+str(time.time()-start_time)+" seconds")
     return
 
 if __name__=='__main__':
