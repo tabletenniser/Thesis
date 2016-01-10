@@ -18,7 +18,7 @@ import logging
 
 def download_video(yt, path, file_name):
     if os.path.exists(os.path.join(path, file_name+'.mp4')):
-        logging.WARNING('WARNING: file %s already exists. Skipped!', str(os.path.join(path, file_name+'.mp4')))
+        logging.warning('file %s already exists. Skipped!', str(os.path.join(path, file_name+'.mp4')))
         return
     yt.set_filename(file_name)
 

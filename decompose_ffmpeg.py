@@ -11,9 +11,9 @@ SAMPLE_RATE = 4
 def extract_frames(video_path, output_dir):
     output_files = os.path.join(output_dir, "frame_%05d.png")
     # cmd = ["ffmpeg", "-i", video_path, "-r", str(SAMPLE_RATE), output_files]
-    logging.debug("command running is %s", str(cmd))
     # subprocess.call(cmd, shell=True)
     cmd = "ffmpeg -i "+video_path+" -r "+str(SAMPLE_RATE)+" "+output_files
+    logging.debug("command running is %s", str(cmd))
     os.system(cmd)
     return
 

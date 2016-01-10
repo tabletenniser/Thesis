@@ -62,48 +62,52 @@ def find_frame_range(input_dir):
 
     return 0,0
 
-def find_num(input_png):
+def find_num(score_dir, index, input_png, top_left_x, top_left_y, delta_x, delta_y):
     # sharpness_factor = 10.0
     # brightness_factor = 10.0
-    bw_threshold = 0.3
+    #bw_threshold = 0.3
     im = Image.open(input_png)
     # player1 score
-    im1 = im.crop((TOP_LEFT_X, TOP_LEFT_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
-    im_max=np.amax(np.asarray(im1))
-    im_min=np.amin(np.asarray(im1))
-    im1 = im1.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
+    im1 = im.crop((top_left_x, top_left_y, top_left_x+delta_x, top_left_y+delta_y)).convert('L')
+    #im_max=np.amax(np.asarray(im1))
+    #im_min=np.amin(np.asarray(im1))
+    #im1 = im1.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
+    im1.save(os.path.join(score_dir, "frame%05d_p1.jpg" % index))
     # enhancer = ImageEnhance.Sharpness(im1)
     # im1 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im1)
     # im1 = enhancer.enhance(brightness_factor)
     # player2 score
-    im2 = im.crop((TOP_LEFT_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
+    im2 = im.crop((top_left_x, top_left_y+delta_y, top_left_x+delta_x, top_left_y+2*delta_y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im2)
     # im2 = enhancer.enhance(sharpness_factor)
     # enhancer = ImageEnhance.Brightness(im2)
-    # im2 = enhancer.enhance(brightness_factor)
-    im_max=np.amax(np.asarray(im2))
-    im_min=np.amin(np.asarray(im2))
-    im2 = im2.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
+    # # im2 = enhancer.enhance(brightness_factor)
+    # im_max=np.amax(np.asarray(im2))
+    # im_min=np.amin(np.asarray(im2))
+    # im2 = im2.point(lambda x: 0 if x<((im_max-im_min)*bw_threshold+im_min) else 255, '1')
+    im2.save(os.path.join(score_dir, "frame%05d_p2.jpg" % index))
     # player1 set score
-    im_set1 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+DELTA_Y)).convert('L')
+    im_set1 = im.crop((top_left_x+delta_x, top_left_y, top_left_x+2*delta_x, top_left_y+delta_y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set1)
-    # im_set1 = enhancer.enhance(sharpness_factor)
-    im_max=np.amax(np.asarray(im_set1))
-    im_min=np.amin(np.asarray(im_set1))
-    im_set1 = im_set1.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
+    # # im_set1 = enhancer.enhance(sharpness_factor)
+    # im_max=np.amax(np.asarray(im_set1))
+    # im_min=np.amin(np.asarray(im_set1))
+    # im_set1 = im_set1.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
+    im_set1.save(os.path.join(score_dir, "frame%05d_s1.jpg" % index))
     # player2 set score
-    im_set2 = im.crop((TOP_LEFT_SET_X, TOP_LEFT_Y+DELTA_Y, TOP_LEFT_SET_X+DELTA_X, TOP_LEFT_Y+2*DELTA_Y)).convert('L')
+    im_set2 = im.crop((top_left_x+delta_x, top_left_y+delta_y, top_left_x+2*delta_x, top_left_y+2*delta_y)).convert('L')
     # enhancer = ImageEnhance.Sharpness(im_set2)
-    # im_set2 = enhancer.enhance(sharpness_factor)
-    im_max=np.amax(np.asarray(im_set2))
-    im_min=np.amin(np.asarray(im_set2))
-    im_set2 = im_set2.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
+    # # im_set2 = enhancer.enhance(sharpness_factor)
+    # im_max=np.amax(np.asarray(im_set2))
+    # im_min=np.amin(np.asarray(im_set2))
+    # im_set2 = im_set2.point(lambda x: 255 if x<(im_max-(im_max-im_min)*(bw_threshold)) else 0, '1')
+    im_set2.save(os.path.join(score_dir, "frame%05d_s2.jpg" % index))
     # Run pytesseract
     CONF = '-psm 6 digits'
     return (pytesseract.image_to_string(im1, config=CONF), pytesseract.image_to_string(im2, config=CONF), pytesseract.image_to_string(im_set1, config=CONF), pytesseract.image_to_string(im_set2, config=CONF))
 
-def main(input_dir, output_dir):
+def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delta_y, is_top_player_top, debug=False):
     start_time = time.time()
     # Set START_FRAME and END_FRAME
     START_FRAME, END_FRAME = find_frame_range(input_dir)
@@ -122,11 +126,11 @@ def main(input_dir, output_dir):
     input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
     while (os.path.exists(input_frame_file) and index<=END_FRAME):
         input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
-        num_1,num_2, num_set1, num_set2 = find_num(input_frame_file)
-        num_1 = num_1.strip()
-        num_2 = num_2.strip()
-        num_set1 = num_set1.strip()
-        num_set2 = num_set2.strip()
+        num_1,num_2, num_set1, num_set2 = find_num(score_dir, index, input_frame_file, top_left_x, top_left_y, delta_x, delta_y)
+        # num_1 = num_1.strip()
+        # num_2 = num_2.strip()
+        # num_set1 = num_set1.strip()
+        # num_set2 = num_set2.strip()
         try:
             if valid(num_1) and valid(num_2) and set_valid(num_set1) and set_valid(num_set2):
                 num_int_1 = int(num_1)
@@ -160,7 +164,7 @@ def main(input_dir, output_dir):
         except ValueError:
             pt_start_frame = index+1
             pass
-        logging.debug("index:%d; score_1:%d; set_1:%d; set_2:%d", index, num_1, num_2, num_set1, num_set2)
+        logging.debug("index:%d; score_1:%s; score_2:%s; set_1:%s; set_2:%s", index, num_1, num_2, num_set1, num_set2)
         index+=1
     top_player_winning_file.close()
     bottom_player_winning_file.close()

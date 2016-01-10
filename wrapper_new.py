@@ -3,7 +3,8 @@ import time
 import argparse
 import crawler
 import decompose_ffmpeg
-import training_set_creation_knn_new
+# import training_set_creation_knn_new
+import training_set_creation
 import construct_clips_structure
 import move_training_set
 import logging
@@ -70,7 +71,7 @@ if __name__ == '__main__':
             video_metadata = input_frame_dir.split('_')
             top_left_x, top_left_y, delta_x, delta_y = video_metadata[-5], video_metadata[-4], video_metadata[-3], video_metadata[-2]
             is_top_player_top = video_metadata[-1] == 't'
-            training_set_creation_knn_new.main(input_frame_dir, score_subdir, result_subdir, int(top_left_x), int(top_left_y), int(delta_x), int(delta_y), is_top_player_top, debug=True)
+            training_set_creation.main(input_frame_dir, score_subdir, result_subdir, int(top_left_x), int(top_left_y), int(delta_x), int(delta_y), is_top_player_top, debug=True)
 
             logging.info("="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15)
             # Call construct_clips_structure.py
