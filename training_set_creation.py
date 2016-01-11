@@ -144,18 +144,30 @@ def main(input_dir, score_dir, output_dir, top_left_x, top_left_y, delta_x, delt
                             sets_sum < BEST_OF-1 and (sets_sum)%2==0) or
                             (num_int_1 == prev_num1 and num_int_2 > prev_num2 and
                             sets_sum < BEST_OF-1 and (sets_sum)%2==1)):
-                        points_top_player_win.append((pt_start_frame, index))
-                        output=str(pt_start_frame)+":"+str(index)
-                        logging.info("write to top_player_winning_frames: %s", output)
-                        top_player_winning_file.write(output+'\n')
+                        if is_top_player_top == True:
+                            points_top_player_win.append((pt_start_frame, index))
+                            output=str(pt_start_frame)+":"+str(index)
+                            logging.info("write to top_player_winning_frames: %s", output)
+                            top_player_winning_file.write(output+'\n')
+                        else:
+                            points_bottom_player_win.append((pt_start_frame, index))
+                            output=str(pt_start_frame)+":"+str(index)
+                            logging.info("write to bottom_player_winning_frames: %s", output)
+                            bottom_player_winning_file.write(output+'\n')
                     elif ((num_int_1 > prev_num1 and num_int_2 == prev_num2 and
                             sets_sum < BEST_OF-1 and (sets_sum)%2==1) or
                             (num_int_1 == prev_num1 and num_int_2 > prev_num2 and
                             sets_sum < BEST_OF-1 and (sets_sum)%2==0)):
-                        points_bottom_player_win.append((pt_start_frame, index))
-                        output=str(pt_start_frame)+":"+str(index)
-                        logging.info("write to bottom_player_winning_frames: %s", output)
-                        bottom_player_winning_file.write(output+'\n')
+                        if is_top_player_top == True:
+                            points_bottom_player_win.append((pt_start_frame, index))
+                            output=str(pt_start_frame)+":"+str(index)
+                            logging.info("write to bottom_player_winning_frames: %s", output)
+                            bottom_player_winning_file.write(output+'\n')
+                        else:
+                            points_top_player_win.append((pt_start_frame, index))
+                            output=str(pt_start_frame)+":"+str(index)
+                            logging.info("write to top_player_winning_frames: %s", output)
+                            top_player_winning_file.write(output+'\n')
                     pt_start_frame = index
                     prev_num1 = num_int_1
                     prev_num2 = num_int_2

@@ -70,7 +70,10 @@ if __name__ == '__main__':
             create_folder_if_not_exist(score_subdir)
             video_metadata = input_frame_dir.split('_')
             top_left_x, top_left_y, delta_x, delta_y = video_metadata[-5], video_metadata[-4], video_metadata[-3], video_metadata[-2]
-            is_top_player_top = video_metadata[-1] == 't'
+            if video_metadata[-1] == 't':
+                is_top_player_top = True
+            else:
+                is_top_player_top = False
             training_set_creation.main(input_frame_dir, score_subdir, result_subdir, int(top_left_x), int(top_left_y), int(delta_x), int(delta_y), is_top_player_top, debug=True)
 
             logging.info("="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15)
