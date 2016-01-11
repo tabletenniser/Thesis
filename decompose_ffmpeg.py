@@ -23,11 +23,11 @@ def main(input_dir, output_dir):
         video_file_path = os.path.join(input_dir, fn)
         video_file_name, video_file_extension = os.path.splitext(video_file_path)
         if not video_file_extension==".mp4":
-            logging.info("Skip non .mp4 file", video_file_path)
+            logging.info("Skip non .mp4 file: %s", video_file_path)
             continue
-        logging.info("Input video path is: ", video_file_path)
+        logging.info("Input video path is: %s", video_file_path)
         output_path = os.path.join(output_dir, os.path.basename(video_file_name))
-        logging.info("Output path is: ", output_path)
+        logging.info("Output path is: %s", output_path)
         if not os.path.isdir(output_path):
             os.makedirs(output_path)
         extract_frames(video_file_path, output_path)
