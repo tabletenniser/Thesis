@@ -27,7 +27,7 @@ def copy_frames_to_destination(src_dir, destination_dir, start_index):
         print 'Copy folder ', frame_dir, ' to destionation', dest_dir
         shutil.copytree(frame_dir, dest_dir)
         index+=1
-    return index+1
+    return index
 
 
 def main(input_dir, output_dir):
