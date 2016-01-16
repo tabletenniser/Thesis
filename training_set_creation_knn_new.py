@@ -99,6 +99,16 @@ def invert_if_black_on_white(im):
         return im
     return PIL.ImageOps.invert(im)
 
+def normalize_and_invert_if_black_on_white(im, is_score_black_on_white):
+    im_array = np.asarray(im)
+    if is_score_black_on_white:
+        im = PIL.ImageOps.invert(im)
+    im_array_min = im_array.min()
+    im_array_max = im_array.max()
+    if im_array_max-im_array_min != 0:
+        im = im.point(lambda x: 255*(x-im_array_min)/(im_array_max - im_array_min) , 'L')
+    return im
+
 def normalize(im):
     im_array = np.asarray(im)
     im_array_min = im_array.min()
@@ -107,7 +117,7 @@ def normalize(im):
         im = im.point(lambda x: 255*(x-im_array_min)/(im_array_max - im_array_min) , 'L')
     return im
 
-def find_num(score_dir, index, knn_neigh, input_png, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y):
+def find_num(score_dir, index, knn_neigh, input_png, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y, is_score_black_on_white):
     sharpness_factor = 10.0
     brightness_factor = 10.0
     bw_threshold = 0.3
@@ -118,8 +128,7 @@ def find_num(score_dir, index, knn_neigh, input_png, top_left_x, top_left_set_x,
     # im1_array_mean = im1_array.mean()
     # im1 = im1.point(lambda x: 0 if x < im1_array_mean else 255, '1')
     im1 = im1.resize((WIDTH, HEIGHT), Image.ANTIALIAS)
-    im1 = invert_if_black_on_white(im1)
-    im1 = normalize(im1)
+    im1 = normalize_and_invert_if_black_on_white(im1, is_score_black_on_white)
     im1.save(os.path.join(score_dir, "frame%05d_p1.png" % index))
     # enhancer = ImageEnhance.Sharpness(im1)
     # im1 = enhancer.enhance(sharpness_factor)
@@ -128,8 +137,7 @@ def find_num(score_dir, index, knn_neigh, input_png, top_left_x, top_left_set_x,
     # player2 score
     im2 = im.crop((top_left_x, top_left_second_y, top_left_x+delta_x, top_left_second_y+delta_y)).convert('L')
     im2 = im2.resize((WIDTH, HEIGHT), Image.ANTIALIAS)
-    im2 = invert_if_black_on_white(im2)
-    im2 = normalize(im2)
+    im2 = normalize_and_invert_if_black_on_white(im2, is_score_black_on_white)
     im2.save(os.path.join(score_dir, "frame%05d_p2.png" % index))
     # enhancer = ImageEnhance.Sharpness(im2)
     # im2 = enhancer.enhance(sharpness_factor)
@@ -158,7 +166,7 @@ def find_num(score_dir, index, knn_neigh, input_png, top_left_x, top_left_set_x,
             conv_to_num(knn_neigh, im_set2))
 
 # writes classified frames in .txt format to output_dir; cropped score images to score_dir
-def main(input_dir, score_dir, output_dir, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y, is_top_player_top, debug=False):
+def main(input_dir, score_dir, output_dir, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y, is_score_black_on_white, is_top_player_top, debug=False):
     start_time = time.time()
     # Set START_FRAME and END_FRAME
     START_FRAME, END_FRAME = find_frame_range(input_dir)
@@ -178,7 +186,7 @@ def main(input_dir, score_dir, output_dir, top_left_x, top_left_set_x, top_left_
     input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
     while (os.path.exists(input_frame_file) and index<=END_FRAME):
         input_frame_file = os.path.join(input_dir, 'frame_%05d.png'%index)
-        num_1, num_2, num_set1, num_set2 = find_num(score_dir, index, knn_neigh, input_frame_file, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y)
+        num_1, num_2, num_set1, num_set2 = find_num(score_dir, index, knn_neigh, input_frame_file, top_left_x, top_left_set_x, top_left_y, top_left_second_y, delta_x, delta_y, is_score_black_on_white)
         logging.debug("index:%d; score_1:%s; score_2:%s; set_1:%s; set_2:%s", index, str(num_1), str(num_2), str(num_set1), str(num_set2))
         if num_1[1] < 0.9 or num_2[1] < 0.9 or num_set1[1] < 0.9 or num_set2[1] < 0.9 or num_set1[0] > 3 or num_set2[0] > 3:
             pt_start_frame = index+1

@@ -1,32 +1,44 @@
 ################## FORMAT: score-x_set-x_score-y_x-width_y-width_t/b ################
-# video1_xuxin_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=r04gnhV7ndU
-# video2_muzi_vs_zhuyuling_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=IcBxW-Bt7WU
-# video3_muzi_vs_miu_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=XploBmt0_TI
-# video4_liangjingkun_vs_marcos_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=eBDRy4x0luw
-# video5_liangjingkun_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=muJvMqgw-1k
-# video6_xuxin_vs_kristian_sweden_2015_377_401_595_619_24_24_t
-#https://www.youtube.com/watch?v=nAT4rh2U-hQ
-# video7_xuxin_vs_zhangjike_kuwait_2015_371_395_593_617_24_24_t
-#https://www.youtube.com/watch?v=pg0nEruH0Xk
-# video8_malong_vs_fanzhendong_kuwait_2015_371_395_593_617_24_24_b
-#https://www.youtube.com/watch?v=nFqsIohkaWE
-# video9_malong_vs_xuxin_kuwait_2015_371_395_593_617_24_24_t
-#https://www.youtube.com/watch?v=fRksCVLIOn4
-# video10_muzi_vs_kasumi_sweden_2015_377_401_595_619_24_24_b
-#https://www.youtube.com/watch?v=KrlUhmfwC7U
-# video11_anton_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_b
-#https://www.youtube.com/watch?v=KrlUhmfwC7U
+# video1_xuxin_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=r04gnhV7ndU
+# video2_muzi_vs_zhuyuling_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=IcBxW-Bt7WU
+# video3_muzi_vs_miu_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=XploBmt0_TI
+# video4_liangjingkun_vs_marcos_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=eBDRy4x0luw
+# video5_liangjingkun_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=muJvMqgw-1k
+# video6_xuxin_vs_kristian_sweden_2015_377_401_595_619_24_24_b_t
+https://www.youtube.com/watch?v=nAT4rh2U-hQ
+# video7_xuxin_vs_zhangjike_kuwait_2015_371_395_593_617_24_24_w_t
+https://www.youtube.com/watch?v=pg0nEruH0Xk
+# video8_malong_vs_fanzhendong_kuwait_2015_371_395_593_617_24_24_w_b
+https://www.youtube.com/watch?v=nFqsIohkaWE
+# video9_malong_vs_xuxin_kuwait_2015_371_395_593_617_24_24_w_t
+https://www.youtube.com/watch?v=fRksCVLIOn4
+# video10_muzi_vs_kasumi_sweden_2015_377_401_595_619_24_24_b_b
+https://www.youtube.com/watch?v=KrlUhmfwC7U
+# video11_anton_vs_fanzhendong_sweden_2015_377_401_595_619_24_24_b_b
+https://www.youtube.com/watch?v=KrlUhmfwC7U
+# video12_xuxin_vs_chuang_sweden_2015_545_495_616_662_35_35_w_b
+https://www.youtube.com/watch?v=OERqjnTi9tY
+# video13_kristian_vs_jens_sweden_2015_545_495_616_662_35_35_w_b
+https://www.youtube.com/watch?v=7LXR095fZy0
+# video14_liu_vs_ying_sweden_2015_545_495_616_662_35_35_w_b
+https://www.youtube.com/watch?v=6w6332Irvno
+# video15_bernadette_vs_yui_sweden_2015_545_495_616_662_35_35_w_t
+https://www.youtube.com/watch?v=q8QW7gi8ILI
+# video16_anton_vs_vasily_sweden_2015_545_495_616_662_35_35_w_b
+https://www.youtube.com/watch?v=BBVBNyVgvf0
+# video17_mima_vs_fukuhara_sweden_2015_545_495_616_662_35_35_w_t
+https://www.youtube.com/watch?v=c4P_HbUotCg
+# video18_anton_vs_yanan_sweden_2015_555_505_626_670_35_35_w_t
+https://www.youtube.com/watch?v=pMDc8SA_c5E
 # video12_TEST_zhu_vs_liu_japan_2015_377_401_595_619_24_24_b
 #https://www.youtube.com/watch?v=xEaoHDfDDxw
 # video12_TEST_malong_vs_xuxin_china_2015_377_401_594_24_24_t
 #https://www.youtube.com/watch?v=MfVJwNWb92A
-# video12_xuxin_vs_chuang_sweden_2015_545_495_616_662_35_35_b
-https://www.youtube.com/watch?v=OERqjnTi9tY
 # video11_xuxin_vs_wangchunting_polish_2015_376_401_593_25_25_t
 #https://www.youtube.com/watch?v=J8oeK4WaQyE
 # video7_fanzhendong_vs_fegerl_polish_2015
