@@ -1,6 +1,11 @@
 Fourth Year Thesis
 ==========
 
+Procedure to create training set to learn rule of table tennis:
+1. python wrapper_new.py
+2. python training_set_preparation_postprocessing.py
+
+
 Steps:
 ---------------
 1. python crawl.py `<path_to_utl.txt>` `<output_folder_for_mp4_files>`
