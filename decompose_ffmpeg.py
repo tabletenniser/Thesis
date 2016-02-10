@@ -5,7 +5,7 @@ import time
 import logging
 
 # Take 4 .png iamges per second
-SAMPLE_RATE = 4
+SAMPLE_RATE = 25
 
 # video_path is a .mp4 file; output_dir is the directory containing all the output frames.
 def extract_frames(video_path, output_dir):

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("url_file", type=str, help='Path to the url.txt file')
-    parser.add_argument("input_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.txt files)')
+    parser.add_argument("input_label_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.txt files)')
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
     parser.add_argument("-s", "--steps", type=str, default='1234', help="steps to perform. 1234 to perform all steps.")
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     file_name = args.url_file
-    input_label_dir = args.input_dir
+    input_label_dir = args.input_label_dir
     ############### STEP 1: CRAWLER.PY ##############
     if '1' in args.steps:
         logging.info("="*20+'STEP #1: CRAWLER.PY'+'='*20)
@@ -64,6 +64,7 @@ if __name__ == '__main__':
                 continue
             logging.info("input frame folder: %s", input_frame_dir)
             train_subdir = os.path.join(training_data_dir, fn)
+            create_folder_if_not_exist(train_subdir)
             input_label_file = os.path.join(input_label_dir, str(fn)+'.txt')
             copy_labeled_frame_images_over.main(input_frame_dir, input_label_file, train_subdir)
 
