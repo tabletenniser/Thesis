@@ -18,10 +18,11 @@ def create_folder_if_not_exist(path):
         os.makedirs(path)
     return
 
-def crop_size_for_video_and_images(input_dir, output_image_dir, output_video_dir, output_audio_dir):
+def crop_size_for_video_and_images(input_dir, output_image_dir, output_video_dir, output_audio_dir=None):
     create_folder_if_not_exist(output_image_dir)
     create_folder_if_not_exist(output_video_dir)
-    create_folder_if_not_exist(output_audio_dir)
+    if output_audio_dir != None:
+        create_folder_if_not_exist(output_audio_dir)
     folders = [f for f in sorted(os.listdir(input_dir)) if os.path.isdir(os.path.join(input_dir, f))]
     print 'folders:', folders
 
@@ -31,11 +32,13 @@ def crop_size_for_video_and_images(input_dir, output_image_dir, output_video_dir
         image_folders = [f for f in sorted(os.listdir(input_folder_path)) if os.path.isdir(os.path.join(input_folder_path, f))]
         videos = [str(img)+'.mp4' for img in image_folders]
         output_video_path = os.path.join(output_video_dir, folder)
-        output_audio_path = os.path.join(output_audio_dir, folder)
+        if output_audio_dir != None:
+            output_audio_path = os.path.join(output_audio_dir, folder)
         output_image_path = os.path.join(output_image_dir, folder)
         create_folder_if_not_exist(output_video_path)
         create_folder_if_not_exist(output_image_path)
-        create_folder_if_not_exist(output_audio_path)
+        if output_audio_dir != None:
+            create_folder_if_not_exist(output_audio_path)
         # if more than 10 image frames, copy re-sample video at SAMPLE_RATE
         # copy videos to output_video_path
         for img_folder in image_folders:
@@ -59,8 +62,9 @@ def crop_size_for_video_and_images(input_dir, output_image_dir, output_video_dir
                 os.system(cmd)
 
                 # 3) Create cropped output audio files
-                cmd = "ffmpeg -i "+full_video_name+" "+os.path.join(output_audio_path, a)
-                os.system(cmd)
+                if output_audio_dir != None:
+                    cmd = "ffmpeg -i "+full_video_name+" "+os.path.join(output_audio_path, a)
+                    os.system(cmd)
         print 'Finish copying to video destination:', output_video_path
     return
 
@@ -109,7 +113,7 @@ def select_images_last_10(output_image_dir):
             files_to_copy = sorted(os.listdir(full_output_image_path))
             if len(files_to_copy) < 10:
                 continue
-            for f in files_to_copy[-10:]:
+            for f in files_to_copy[-SAMPLE_RATE:]:
                 src = os.path.join(full_output_image_path, f)
                 dest = os.path.join(output_selected_image_path, img_folder+'_'+f)
                 print "DEBUG: copy ", src, " to ", dest
@@ -165,13 +169,14 @@ if __name__=='__main__':
     parser.add_argument("input_dir", type=str, help='Path to the directory containing a top_player_winning folder and a bottom_player_winning folder.')
     parser.add_argument("image_dir", type=str, help='Path to the output images from the game.')
     parser.add_argument("video_dir", type=str, help='Path to the output video directory.')
-    parser.add_argument("audio_dir", type=str, help='Path to the output audio directory.')
+    # parser.add_argument("audio_dir", type=str, help='Path to the output audio directory.')
     args = parser.parse_args()
     args.input_dir = os.path.abspath(args.input_dir)
     args.image_dir = os.path.abspath(args.image_dir)
     args.video_dir = os.path.abspath(args.video_dir)
-    args.audio_dir = os.path.abspath(args.audio_dir)
-    # crop_size_for_video_and_images(args.input_dir, args.image_dir, args.video_dir, args.audio_dir)
+    # args.audio_dir = os.path.abspath(args.audio_dir)
+    args.audio_dir=None
+    crop_size_for_video_and_images(args.input_dir, args.image_dir, args.video_dir, args.audio_dir)
     # select_images(args.image_dir, args.audio_dir)
     select_images_last_10(args.image_dir)
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
