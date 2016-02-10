@@ -11,7 +11,7 @@ from scipy.io.wavfile import read,write
 from numpy.fft import rfft, irfft
 from scipy.signal import blackmanharris, fftconvolve
 
-SAMPLE_RATE = 20
+SAMPLE_RATE = 25
 
 def create_folder_if_not_exist(path):
     if not os.path.isdir(path):
