@@ -3,8 +3,8 @@ import os
 import shutil
 import time
 
-# Take 4 .png iamges per second
-SAMPLE_RATE = 4.0
+# Take 25 .png iamges per second
+SAMPLE_RATE = 25.0
 
 # video_path is a .mp4 file; output_dir is the directory containing all the output frames.
 def create_video_clip_and_copy_frames(frame_list_file, frames_path, video_path, output_dir):
