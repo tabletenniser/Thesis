@@ -29,32 +29,30 @@ if __name__ == '__main__':
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
     parser.add_argument("-s", "--steps", type=str, default='1234', help="steps to perform. 1234 to perform all steps.")
-    parser.add_argument("-m", "--mp4_video_dir", type=str, default='final_input/videos', help="mp4_video_dir")
-    parser.add_argument("-f", "--frames_dir", type=str, default='final_input/frames', help="frames_dir")
+    parser.add_argument("-m", "--mp4_video_dir", type=str, default='', help="mp4_video_dir")
+    parser.add_argument("-f", "--frames_dir", type=str, default='', help="frames_dir")
     args = parser.parse_args()
 
+    if args.mp4_video_dir == '':
+        args.mp4_video_dir = os.path.join(args.inter_dir, 'videos')
+    if args.frames_dir == '':
+        args.frames_dir = os.path.join(args.inter_dir, 'frames')
+    mp4_video_dir = args.mp4_video_dir
+    frames_dir = args.frames_dir
     file_name = args.url_file
     input_label_dir = args.input_label_dir
     ############### STEP 1: CRAWLER.PY ##############
     if '1' in args.steps:
         logging.info("="*20+'STEP #1: CRAWLER.PY'+'='*20)
-        mp4_video_dir = os.path.join(args.inter_dir, 'videos')
         create_folder_if_not_exist(mp4_video_dir)
         crawler.main(file_name, mp4_video_dir)
     ############### STEP 2: DECOMPOSE_FFMPEG.PY ##############
     if '2' in args.steps:
-        if not 'mp4_video_dir' in locals() and not 'mp4_video_dir' in globals():
-            mp4_video_dir = args.mp4_video_dir
         logging.info("="*15+'STEP #2: DECOMPOSE_FFMPEG.PY'+'='*15)
-        frames_dir = os.path.join(args.inter_dir, 'frames')
         create_folder_if_not_exist(frames_dir)
         decompose_ffmpeg.main(mp4_video_dir, frames_dir)
     ############### STEP 3: COPY_LABELED_FRAME_IMAGES_OVER.PY ##############
     if '3' in args.steps:
-        if not 'mp4_video_dir' in locals() and not 'mp4_video_dir' in globals():
-            mp4_video_dir = args.mp4_video_dir
-        if not 'frames_dir' in locals() and not 'frames_dir' in globals():
-            frames_dir = args.frames_dir
         training_data_dir = os.path.join(args.inter_dir, 'classified_data')
         create_folder_if_not_exist(training_data_dir)
         for fn in os.listdir(frames_dir):
@@ -64,9 +62,10 @@ if __name__ == '__main__':
                 continue
             logging.info("input frame folder: %s", input_frame_dir)
             train_subdir = os.path.join(training_data_dir, fn)
+            video_file = os.path.join(mp4_video_dir, str(fn)+'.mp4')
             create_folder_if_not_exist(train_subdir)
             input_label_file = os.path.join(input_label_dir, str(fn)+'.txt')
-            copy_labeled_frame_images_over.main(input_frame_dir, input_label_file, train_subdir)
+            copy_labeled_frame_images_over.main(input_frame_dir, video_file, input_label_file, train_subdir)
 
             # logging.info("="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15)
             # if not os.path.isdir(train_subdir):
