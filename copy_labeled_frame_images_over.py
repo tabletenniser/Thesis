@@ -47,12 +47,13 @@ def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=
                 shutil.copy(input_file, output_frame_dir)
 
             # ffmpeg -i video1_xuxin_vs_fanzhendong_sweden_2015.mp4 -ss 313 -c copy -t 5 output.mp4
-            output_file = os.path.join(output_class_dir, 'point_%04d.mp4'%pt_index)
-            start_time = str(frames[0]/SAMPLE_RATE - 1)
-            duration = str((frames[1]-frames[0])/SAMPLE_RATE)
-            cmd = "ffmpeg -i "+input_video_path+" -ss "+start_time+" -c copy -t "+duration+" "+output_file
-            print "Running command: ", cmd
-            os.system(cmd)
+            # DO NOT RECREATE VIDEO SAMPLE FOR NOW
+            # output_file = os.path.join(output_class_dir, 'point_%04d.mp4'%pt_index)
+            # start_time = str(frames[0]/SAMPLE_RATE - 1)
+            # duration = str((frames[1]-frames[0])/SAMPLE_RATE)
+            # cmd = "ffmpeg -i "+input_video_path+" -ss "+start_time+" -c copy -t "+duration+" "+output_file
+            # print "Running command: ", cmd
+            # os.system(cmd)
             pt_index += 1
 
     logging.info("COPY_LABLED_FRAME_IMAGES_OVER.PY TAKES:"+str(time.time()-perform_start_time)+" seconds")

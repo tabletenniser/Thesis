@@ -64,6 +64,12 @@ def select_images_last_10(output_image_dir):
                 print "DEBUG: copy ", src, " to ", dest
                 shutil.copy(src, dest)
 
+def main(input_dir, image_dir):
+    crop_size_for_video_and_images(input_dir, image_dir)
+    # select_images(args.image_dir, args.audio_dir)
+    select_images_last_10(image_dir)
+    print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
+
 if __name__=='__main__':
     start_time = time.time()
     # Parse out the arguments
@@ -75,8 +81,4 @@ if __name__=='__main__':
     args.input_dir = os.path.abspath(args.input_dir)
     args.image_dir = os.path.abspath(args.image_dir)
     # args.audio_dir = os.path.abspath(args.audio_dir)
-    args.audio_dir=None
-    crop_size_for_video_and_images(args.input_dir, args.image_dir)
-    # select_images(args.image_dir, args.audio_dir)
-    select_images_last_10(args.image_dir)
-    print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
+    main(args.input_dir, args.image_dir)

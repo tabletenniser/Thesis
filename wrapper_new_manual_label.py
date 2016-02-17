@@ -8,6 +8,7 @@ import training_set_creation
 import construct_clips_structure
 import move_training_set
 import logging
+import postprocessing_new
 
 def init_logging():
     FORMAT = "[%(filename)s:%(lineno)s - %(funcName)15s()] %(levelname)s:%(message)s"
@@ -28,7 +29,8 @@ if __name__ == '__main__':
     parser.add_argument("input_label_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.txt files)')
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
-    parser.add_argument("-s", "--steps", type=str, default='1234', help="steps to perform. 1234 to perform all steps.")
+    parser.add_argument("output_labled_image_dir", type=str, help='Final output directory concatenating all images from different points together and crop them to 600*600. (i.e output from postprocessing_new)')
+    parser.add_argument("-s", "--steps", type=str, default='12345', help="steps to perform. 12345 to perform all steps.")
     parser.add_argument("-m", "--mp4_video_dir", type=str, default='', help="mp4_video_dir")
     parser.add_argument("-f", "--frames_dir", type=str, default='', help="frames_dir")
     args = parser.parse_args()
@@ -74,6 +76,10 @@ if __name__ == '__main__':
             # construct_clips_structure.main(input_frame_dir, video_file, train_subdir)
     ############### STEP 4: MOVE_TRAINING_SET.PY ##############
     if '4' in args.steps:
-        logging.info("="*15+'STEP #5: MOVE_TRAINING_SET.PY'+'='*15)
+        logging.info("="*15+'STEP #4: MOVE_TRAINING_SET.PY'+'='*15)
         move_training_set.main(training_data_dir, args.output_dir)
+    ############### STEP 5: POSTPROCESSING_NEW.PY ##############
+    if '5' in args.steps:
+        logging.info("="*15+'STEP #5: POSTPROCESSING_NEW.PY'+'='*15)
+        postprocessing_new.main(args.output_dir, args.output_labled_image_dir)
 

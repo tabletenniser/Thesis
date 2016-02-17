@@ -89,7 +89,7 @@ def main(input_dir, output_dir):
     print "MOVE_TRAINING_SET.PY TAKES:"+str(time.time()-start_time)+" seconds"
     return
 
-if __name__=='__main__':
+if __name__== '__main__':
     # Parse out the arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("input_training_data_dir", type=str, help='Path to the directory containing a set of folders, one for each video. Each video folder then contains two folders: top_player_winning and bottom_player_winning')
