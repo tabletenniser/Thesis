@@ -65,13 +65,13 @@ def select_images_last_10(output_image_dir):
                 shutil.copy(src, dest)
 
 def main(input_dir, image_dir):
+    start_time = time.time()
     crop_size_for_video_and_images(input_dir, image_dir)
     # select_images(args.image_dir, args.audio_dir)
     select_images_last_10(image_dir)
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
 
 if __name__=='__main__':
-    start_time = time.time()
     # Parse out the arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("input_dir", type=str, help='Path to the directory containing a set of stroke classes like top_player_winning, bottom_player_winning etc.')
