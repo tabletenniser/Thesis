@@ -1,6 +1,6 @@
 # No sound, large commentator noise; two sets finished labeling, starting 2607
 c1_top_player_forehand_serve
-322:335
+320:334
 535:549
 637:650
 921:940
@@ -12,7 +12,6 @@ c1_top_player_forehand_serve
 2566:2585
 c2_top_player_backhand_serve
 c3_bottom_player_forehand_serve
-320:344
 785:801
 1080:1097
 1331:1361
@@ -31,7 +30,7 @@ c5_top_player_forehand_loop
 1934:1944
 1954:1967
 c6_top_player_backhand_loop
-344:360
+346:360
 660:670
 801:813
 1564:1580
@@ -98,7 +97,7 @@ c19_bottom_player_forehand_chop
 1691:1701
 2363:2375
 c20_bottom_player_backend_chop
-335:344
+334:346
 1200:1210
 2089:2105
 

@@ -53,7 +53,6 @@ c6_top_player_backhand_loop
 c7_bottom_player_forehand_loop
 292:308
 315:326
-650:672
 1466:1481
 2036:2053
 2181:2198
@@ -93,6 +92,7 @@ c10_top_player_backhand_block
 4088:4100
 4960:4970
 c11_bottom_player_forehand_block
+650:672
 c12_bottom_player_backend_block
 849:858
 1724:1733
@@ -157,7 +157,7 @@ c23_top_player_forehand_miss_hit
 3332:3341
 4112:4126
 c24_top_player_backend_under_net
-4237:4255
+4237:4258
 c25_top_player_backend_hit_out
 2312:2323
 4383:4407
