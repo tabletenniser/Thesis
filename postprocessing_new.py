@@ -85,20 +85,24 @@ def crop_size_for_video_and_images(input_dir, output_image_dir):
                 continue
             full_img_folder_name = os.path.join(output_image_path, img_folder)
             create_folder_if_not_exist(full_img_folder_name)
+            mix_classes_full_img_folder_name = [None for _ in xrange(len(mix_classes_output_image_path))]
             # loop over all hyper-classes and create_folder_if_not_exist
             for i in xrange(len(mix_classes_output_image_path)):
-                mix_classes_output_image_path[i] = os.path.join(mix_classes_output_image_path[i], mix_classes_pt_counter[mix_classes_output_image_path[i]])
-                mix_classes_pt_counter[mix_classes_output_image_path[i]] += 1
-                create_folder_if_not_exist(mix_classes_output_image_path[i])
+                print mix_classes_output_image_path[i]
+                print os.path.basename(mix_classes_output_image_path[i])
+                # mix_classes_full_img_folder_name[i] = os.path.join(mix_classes_output_image_path[i], img_folder)
+                mix_classes_full_img_folder_name[i] = os.path.join(mix_classes_output_image_path[i], 'point_%05d'%(mix_classes_pt_counter[os.path.basename(mix_classes_output_image_path[i])]))
+                mix_classes_pt_counter[os.path.basename(mix_classes_output_image_path[i])] += 1
+                create_folder_if_not_exist(mix_classes_full_img_folder_name[i])
             # Loop over frames
             for img_file in os.listdir(full_input_folder_name):
                 ii = Image.open(os.path.join(full_input_folder_name, img_file))
                 box = (300, 0, 900, 600)
                 region = ii.crop(box)
                 region.save(os.path.join(full_img_folder_name, img_file))
-                for i in xrange(len(mix_classes_output_image_path)):
-                    region.save(os.path.join(mix_classes_output_image_path[i], img_file))
-                    print 'save cropped image to mix class', os.path.join(full_img_folder_name, img_file)
+                for i in xrange(len(mix_classes_full_img_folder_name)):
+                    region.save(os.path.join(mix_classes_full_img_folder_name[i], img_file))
+                    print 'save cropped image to mix class', os.path.join(mix_classes_full_img_folder_name[i], img_file)
                 print 'save cropped image to', os.path.join(full_img_folder_name, img_file)
 
     return
