@@ -17,7 +17,10 @@ def init_logging():
     logging.info('PROGRAM STARTS')
 
 def create_folder_if_not_exist(path):
-    if not os.path.isdir(path):
+    print 'Running create_folder_if_not_exist() with: ', path
+    print 'os.path.isdir(): ', os.path.isdir(path)
+    print 'os.path.exists(): ', os.path.exists(path)
+    if not os.path.isdir(path) and not os.path.exists(path):
         os.makedirs(path)
     return
 
@@ -29,7 +32,7 @@ if __name__ == '__main__':
     parser.add_argument("input_label_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.txt files)')
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
-    parser.add_argument("output_labled_image_dir", type=str, help='Final output directory concatenating all images from different points together and crop them to 600*600. (i.e output from postprocessing_new)')
+    parser.add_argument("output_labeled_image_dir", type=str, help='Final output directory concatenating all images from different points together and crop them to 600*600. (i.e output from postprocessing_new)')
     parser.add_argument("-s", "--steps", type=str, default='12345', help="steps to perform. 12345 to perform all steps.")
     parser.add_argument("-m", "--mp4_video_dir", type=str, default='', help="mp4_video_dir")
     parser.add_argument("-f", "--frames_dir", type=str, default='', help="frames_dir")
@@ -39,6 +42,15 @@ if __name__ == '__main__':
         args.mp4_video_dir = os.path.join(args.inter_dir, 'videos')
     if args.frames_dir == '':
         args.frames_dir = os.path.join(args.inter_dir, 'frames')
+    # Convert everythign to absolute path to avoid confusion
+    args.frames_dir = os.path.abspath(args.frames_dir)
+    args.mp4_video_dir = os.path.abspath(args.mp4_video_dir)
+    args.url_file = os.path.abspath(args.url_file)
+    args.input_label_dir = os.path.abspath(args.input_label_dir)
+    args.inter_dir = os.path.abspath(args.inter_dir)
+    args.output_dir = os.path.abspath(args.output_dir)
+    args.output_labeled_image_dir = os.path.abspath(args.output_labeled_image_dir)
+
     mp4_video_dir = args.mp4_video_dir
     frames_dir = args.frames_dir
     file_name = args.url_file
@@ -81,5 +93,5 @@ if __name__ == '__main__':
     ############### STEP 5: POSTPROCESSING_NEW.PY ##############
     if '5' in args.steps:
         logging.info("="*15+'STEP #5: POSTPROCESSING_NEW.PY'+'='*15)
-        postprocessing_new.main(args.output_dir, args.output_labled_image_dir)
+        postprocessing_new.main(args.output_dir, args.output_labeled_image_dir)
 
