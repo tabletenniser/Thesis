@@ -1,6 +1,6 @@
 # First two games annotated, starting at 5682
 c1_top_player_forehand_serve
-251:271
+251:270
 419:441
 791:814
 1324:1358
@@ -32,7 +32,7 @@ c3_bottom_player_forehand_serve
 c4_bottom_player_backend_serve
 
 c5_top_player_forehand_loop
-326:340
+326:339
 452:465
 621:650
 672:690
@@ -81,9 +81,9 @@ c8_bottom_player_backend_loop
 c9_top_player_forehand_block
 2053:2063
 2577:2587
-2671:2692
+2672:2692
 c10_top_player_backhand_block
-279:294
+281:292
 308:315
 1481:1495
 1997:2010
@@ -106,7 +106,7 @@ c14_top_player_backhand_flip
 4938:4948
 c15_bottom_player_forehand_flip
 c16_bottom_player_backend_flip
-268:281
+270:281
 441:452
 1358:1368
 4623:4637
@@ -166,7 +166,7 @@ c26_top_player_backend_miss_hit
 c27_bottom_player_forehand_under_net
 c28_bottom_player_forehand_hit_out
 339:363
-692:707
+690:707
 2692:2716
 2447:2461
 3153:3183
