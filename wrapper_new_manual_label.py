@@ -33,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
     parser.add_argument("output_labeled_image_dir", type=str, help='Final output directory concatenating all images from different points together and crop them to 600*600. (i.e output from postprocessing_new)')
-    parser.add_argument("-s", "--steps", type=str, default='12345', help="steps to perform. 12345 to perform all steps.")
+    parser.add_argument("-s", "--steps", type=str, default='12345', help="steps to perform. 1(crawler) 2(decompose_ffmpeg) 3(copy_labeled_frame_images_over) 4(move_training_set) 5(postprocessing) to perform all steps.")
     parser.add_argument("-m", "--mp4_video_dir", type=str, default='', help="mp4_video_dir")
     parser.add_argument("-f", "--frames_dir", type=str, default='', help="frames_dir")
     args = parser.parse_args()
