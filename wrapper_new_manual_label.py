@@ -29,7 +29,7 @@ if __name__ == '__main__':
     start_time = time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument("url_file", type=str, help='Path to the url.txt file')
-    parser.add_argument("input_label_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.txt files)')
+    parser.add_argument("input_label_dir", type=str, help='Path to directory where the manual label files locate (i.e a list of videoxx_<metadata>.in files)')
     parser.add_argument("inter_dir", type=str, help='Path to the directory where intermediate result goes. Including decomposed frame images, score images and frame pair files.')
     parser.add_argument("output_dir", type=str, help='Output directory where points are separated into top_winning and bottom_winning folders.')
     parser.add_argument("output_labeled_image_dir", type=str, help='Final output directory concatenating all images from different points together and crop them to 600*600. (i.e output from postprocessing_new)')
@@ -76,10 +76,11 @@ if __name__ == '__main__':
                 continue
             logging.info("input frame folder: %s", input_frame_dir)
             train_subdir = os.path.join(training_data_dir, fn)
-            video_file = os.path.join(mp4_video_dir, str(fn)+'.mp4')
+            # video_file = os.path.join(mp4_video_dir, str(fn)+'.mp4')
             create_folder_if_not_exist(train_subdir)
-            input_label_file = os.path.join(input_label_dir, str(fn)+'.txt')
-            copy_labeled_frame_images_over.main(input_frame_dir, video_file, input_label_file, train_subdir)
+            input_label_file = os.path.join(input_label_dir, str(fn)+'.in')
+            # copy_labeled_frame_images_over.main(input_frame_dir, video_file, input_label_file, train_subdir)
+            copy_labeled_frame_images_over.main(input_frame_dir, '', input_label_file, train_subdir)
 
             # logging.info("="*15+'STEP #4: CONSTRUCT_CLIPS_STRUCTURE.PY'+'='*15)
             # if not os.path.isdir(train_subdir):

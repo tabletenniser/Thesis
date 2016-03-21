@@ -9,7 +9,7 @@ import numpy as np
 import shutil
 
 mix_classes = {
-    'cls_forehand' : SET(['C1_TOP_PLAYER_FOREHAND_SERVE',
+    'cls_forehand' : set(['C1_TOP_PLAYER_FOREHAND_SERVE',
     'C3_BOTTOM_PLAYER_FOREHAND_SERVE',
     'C5_TOP_PLAYER_FOREHAND_LOOP',
     'C7_BOTTOM_PLAYER_FOREHAND_LOOP',
@@ -19,7 +19,7 @@ mix_classes = {
     'C15_BOTTOM_PLAYER_FOREHAND_FLIP',
     'C17_TOP_PLAYER_FOREHAND_CHOP',
     'C19_BOTTOM_PLAYER_FOREHAND_CHOP']),
-    'cls_backhand' : SET(['C2_TOP_PLAYER_BACKHAND_SERVE',
+    'cls_backhand' : set(['C2_TOP_PLAYER_BACKHAND_SERVE',
     'C4_BOTTOM_PLAYER_BACKHAND_SERVE',
     'C6_TOP_PLAYER_BACKHAND_LOOP',
     'C8_BOTTOM_PLAYER_BACKHAND_LOOP',
@@ -29,11 +29,11 @@ mix_classes = {
     'C16_BOTTOM_PLAYER_BACKHAND_FLIP',
     'C18_TOP_PLAYER_BACKHAND_CHOP',
     'C20_BOTTOM_PLAYER_BACKHAND_CHOP']),
-    'cls_top_player_winning' : SET(['C25_BOTTOM_PLAYER_UNDER_NET',
+    'cls_top_player_winning' : set(['C25_BOTTOM_PLAYER_UNDER_NET',
     'C26_BOTTOM_PLAYER_HIT_OUT',
     'C27_BOTTOM_PLAYER_FOREHAND_MISS_HIT',
     'C28_BOTTOM_PLAYER_BACKHAND_MISS_HIT']),
-    'cls_bottom_player_winning' : SET(['C21_TOP_PLAYER_UNDER_NET',
+    'cls_bottom_player_winning' : set(['C21_TOP_PLAYER_UNDER_NET',
     'C22_TOP_PLAYER_HIT_OUT',
     'C23_TOP_PLAYER_FOREHAND_MISS_HIT',
     'C24_TOP_PLAYER_BACKHAND_MISS_HIT'])

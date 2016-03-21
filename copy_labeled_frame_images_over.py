@@ -22,6 +22,10 @@ def create_dir_if_not_exist(path):
 def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=True):
     perform_start_time = time.time()
 
+    # If manual label file doesn't exist, return directly.
+    if not os.path.isfile(input_label_file):
+        return
+
     with open(input_label_file) as f:
         for line in f:
             line = line.strip()

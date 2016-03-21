@@ -18,27 +18,27 @@ https://www.youtube.com/watch?v=NfYrly8ocs8
 # video9_xuxin_vs_chuang_sweden_2015_545_495_616_662_35_35_w_b
 https://www.youtube.com/watch?v=OERqjnTi9tY
 # video10_kristian_vs_jens_sweden_2015_545_495_616_662_35_35_w_b
-https://www.youtube.com/watch?v=7LXR095fZy0
+#https://www.youtube.com/watch?v=7LXR095fZy0
 # video11_liu_vs_ying_sweden_2015_545_495_616_662_35_35_w_b
-https://www.youtube.com/watch?v=6w6332Irvno
+#https://www.youtube.com/watch?v=6w6332Irvno
 # video12_bernadette_vs_yui_sweden_2015_545_495_616_662_35_35_w_t
-https://www.youtube.com/watch?v=q8QW7gi8ILI
+#https://www.youtube.com/watch?v=q8QW7gi8ILI
 # video13_anton_vs_vasily_sweden_2015_545_495_616_662_35_35_w_b
-https://www.youtube.com/watch?v=BBVBNyVgvf0
+#https://www.youtube.com/watch?v=BBVBNyVgvf0
 # video14_mima_vs_fukuhara_sweden_2015_545_495_616_662_35_35_w_t
-https://www.youtube.com/watch?v=c4P_HbUotCg
+#https://www.youtube.com/watch?v=c4P_HbUotCg
 # video15_anton_vs_yanan_sweden_2015_555_505_626_670_35_35_w_t
-https://www.youtube.com/watch?v=pMDc8SA_c5E
+#https://www.youtube.com/watch?v=pMDc8SA_c5E
 # video16_tomokazu_vs_anton_sweden_2015_555_505_626_670_35_35_w_t
-https://www.youtube.com/watch?v=lf1Um41WNjw
+#https://www.youtube.com/watch?v=lf1Um41WNjw
 # video17_ning_vs_melek_sweden_2015_555_505_626_670_35_35_w_b
-https://www.youtube.com/watch?v=bh3eU_pRzHs
+#https://www.youtube.com/watch?v=bh3eU_pRzHs
 # video18_liu_vs_polina_sweden_2015_555_505_626_670_35_35_w_b
-https://www.youtube.com/watch?v=S90q4DKuRvE
+#https://www.youtube.com/watch?v=S90q4DKuRvE
 # video19_benjamin_vs_chiang_sweden_2015_555_505_626_670_35_35_w_t
-https://www.youtube.com/watch?v=RxvfGvxnrps
+#https://www.youtube.com/watch?v=RxvfGvxnrps
 # video20_maze_vs_jens_sweden_weird_2015_550_505_626_670_35_35_w_t
-https://www.youtube.com/watch?v=9NON2yGAJ-g
+#https://www.youtube.com/watch?v=9NON2yGAJ-g
 # video12_TEST_zhu_vs_liu_japan_2015_377_401_595_619_24_24_b
 #https://www.youtube.com/watch?v=xEaoHDfDDxw
 # video12_TEST_malong_vs_xuxin_china_2015_377_401_594_24_24_t
