@@ -11,6 +11,8 @@ import shutil
 
 SAMPLE_RATE = 25.0
 
+pt_indices = [0 for _ in xrange(30)]
+
 def create_dir_if_not_exist(path):
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -20,7 +22,6 @@ def create_dir_if_not_exist(path):
 def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=True):
     perform_start_time = time.time()
 
-    pt_index = 1
     with open(input_label_file) as f:
         for line in f:
             line = line.strip()
@@ -29,18 +30,20 @@ def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=
 
             frames = line.split(':')
             # case where a label instead of the actual frame range
-            if len(frames)!=2:
-                output_class_dir = os.path.join(output_dir, line)
-                create_dir_if_not_exist(output_class_dir)
-                pt_index = 0
+            if len(frames)!=3:
+                print "ERROR: illegal line format!"
                 continue
 
             # Case where the actual point data - COPY OVER THE IMAGES
             frames[0] = int(frames[0])
             frames[1] = int(frames[1])
-            output_frame_dir = os.path.join(output_class_dir, 'point_%04d'%pt_index)
-            if not os.path.isdir(output_frame_dir):
-                os.makedirs(output_frame_dir)
+            cls = frames[2]
+            cls_number = int(cls[1:cls.find('_')])
+
+            output_class_dir = os.path.join(output_dir, cls)
+            create_dir_if_not_exist(output_class_dir)
+            output_frame_dir = os.path.join(output_class_dir, 'point_%04d'%pt_indices[cls_number-1])
+            create_dir_if_not_exist(output_frame_dir)
             print "Copy image from ", input_frame_dir, " to ", output_frame_dir
             for index in xrange(frames[0], frames[1]):
                 input_file = os.path.join(input_frame_dir, "frame_%05d.png"%index)
@@ -54,7 +57,7 @@ def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=
             # cmd = "ffmpeg -i "+input_video_path+" -ss "+start_time+" -c copy -t "+duration+" "+output_file
             # print "Running command: ", cmd
             # os.system(cmd)
-            pt_index += 1
+            pt_indices[cls_number-1] += 1
 
     logging.info("COPY_LABLED_FRAME_IMAGES_OVER.PY TAKES:"+str(time.time()-perform_start_time)+" seconds")
     return
@@ -63,12 +66,12 @@ if __name__=='__main__':
     # Parse out the arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("input_frame_dir", type=str, help='Path to the directory containing .png frames from the video')
-    parser.add_argument("input_video_path", type=str, help='Path to the original video file')
+    # parser.add_argument("input_video_path", type=str, help='Path to the original video file')
     parser.add_argument("input_label_file", type=str, help='File containing the labels and corresponding set of frame numbers')
     parser.add_argument("output_dir", type=str, help='Training set storage directory. Contain folders, each one is a label specified in input_label_file(e.g top_player_winning and bottom_player_winning)')
     args = parser.parse_args()
     args.input_frame_dir = os.path.abspath(args.input_frame_dir)
-    args.input_video_path = os.path.abspath(args.input_video_path)
+    # args.input_video_path = os.path.abspath(args.input_video_path)
     args.input_label_file = os.path.abspath(args.input_label_file)
     args.output_dir = os.path.abspath(args.output_dir)
 
@@ -82,4 +85,5 @@ if __name__=='__main__':
     logging=log
 
     ######### Call main function to perform the copies
-    main(args.input_frame_dir, args.input_video_path, args.input_label_file, args.output_dir)
+    # main(args.input_frame_dir, args.input_video_path, args.input_label_file, args.output_dir)
+    main(args.input_frame_dir, '', args.input_label_file, args.output_dir)
