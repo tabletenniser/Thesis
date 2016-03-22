@@ -31,7 +31,7 @@ def main(input_frame_dir, input_video_path, input_label_file, output_dir, debug=
             line = line.strip()
             if len(line) == 0 or line[0] == "#":
                 if len(cur_pt_lines) > 0:
-                    output_label_file = os.path.join(output_pt_dir, 'label.txt')
+                    output_label_file = os.path.join(output_pt_dir, 'a_label.txt')
                     with open(output_label_file, 'w+') as f:
                         for l in cur_pt_lines:
                             f.write('%s\n'%l)

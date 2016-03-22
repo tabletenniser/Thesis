@@ -33,8 +33,8 @@ def main(input_dir, output_dir):
 if __name__== '__main__':
     # Parse out the arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_training_data_dir", type=str, help='Path to the directory containing a set of folders, one for each video. Each video folder then contains a set of POINT_xx folders, each with a label.txt')
-    parser.add_argument("output_dir", type=str, help='Final output directory, containing a list of POINT_xx folders, each with a label.txt')
+    parser.add_argument("input_training_data_dir", type=str, help='Path to the directory containing a set of folders, one for each video. Each video folder then contains a set of POINT_xx folders, each with a a_label.txt')
+    parser.add_argument("output_dir", type=str, help='Final output directory, containing a list of POINT_xx folders, each with a a_label.txt')
     args = parser.parse_args()
     args.input_training_data_dir = os.path.abspath(args.input_training_data_dir)
     args.output_dir = os.path.abspath(args.output_dir)

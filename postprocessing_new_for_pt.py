@@ -28,7 +28,7 @@ def crop_size_for_video_and_images(input_dir, output_image_dir):
         # Loop over frames
         for img_file in os.listdir(full_input_folder_name):
             if 'png' not in img_file.lower():
-                if img_file.lower() == 'label.txt':
+                if img_file.lower() == 'a_label.txt':
                     img_file_full_path = os.path.join(full_input_folder_name, img_file)
                     shutil.copy(img_file_full_path, full_img_folder_name)
                     print 'copy ', img_file_full_path, ' to ', full_img_folder_name
@@ -50,7 +50,7 @@ def main(input_dir, image_dir):
 if __name__=='__main__':
     # Parse out the arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_dir", type=str, help='Path to the directory containing a set of points, each containing a set of .png files and a label.txt')
+    parser.add_argument("input_dir", type=str, help='Path to the directory containing a set of points, each containing a set of .png files and a a_label.txt')
     parser.add_argument("image_dir", type=str, help='Path to the output directory.')
     # parser.add_argument("audio_dir", type=str, help='Path to the output audio directory.')
     args = parser.parse_args()
