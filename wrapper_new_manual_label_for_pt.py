@@ -6,9 +6,9 @@ import decompose_ffmpeg
 import copy_labeled_frame_images_over_for_pt
 import training_set_creation
 import construct_clips_structure
-import move_training_set
+import move_training_set_for_pt
 import logging
-import postprocessing_new
+import postprocessing_new_for_pt
 
 def init_logging():
     FORMAT = "[%(filename)s:%(lineno)s - %(funcName)15s()] %(levelname)s:%(message)s"
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         decompose_ffmpeg.main(mp4_video_dir, frames_dir)
     ############### STEP 3: COPY_LABELED_FRAME_IMAGES_OVER_FOR_PT.PY ##############
     if '3' in args.steps:
-        training_data_dir = os.path.join(args.inter_dir, 'classified_data')
+        training_data_dir = os.path.join(args.inter_dir, 'classified_data_for_pt')
         create_folder_if_not_exist(training_data_dir)
         for fn in os.listdir(frames_dir):
             logging.info("="*15+'STEP #3: COPY_LABELED_FRAME_IMAGES_OVER_FOR_PT.PY'+'='*15)
@@ -87,12 +87,12 @@ if __name__ == '__main__':
             #     os.makedirs(train_subdir)
             # video_file = os.path.join(mp4_video_dir, str(fn)+'.mp4')
             # construct_clips_structure.main(input_frame_dir, video_file, train_subdir)
-    ############### STEP 4: MOVE_TRAINING_SET.PY ##############
+    ############### STEP 4: MOVE_TRAINING_SET_FOR_PT.PY ##############
     if '4' in args.steps:
-        logging.info("="*15+'STEP #4: MOVE_TRAINING_SET.PY'+'='*15)
-        move_training_set.main(training_data_dir, args.output_dir)
+        logging.info("="*15+'STEP #4: MOVE_TRAINING_SET_FOR_PT.PY'+'='*15)
+        move_training_set_for_pt.main(training_data_dir, args.output_dir)
     ############### STEP 5: POSTPROCESSING_NEW.PY ##############
     if '5' in args.steps:
-        logging.info("="*15+'STEP #5: POSTPROCESSING_NEW.PY'+'='*15)
-        postprocessing_new.main(args.output_dir, args.output_labeled_image_dir)
+        logging.info("="*15+'STEP #5: POSTPROCESSING_NEW_FOR_PT.PY'+'='*15)
+        postprocessing_new_for_pt.main(args.output_dir, args.output_labeled_image_dir)
 
