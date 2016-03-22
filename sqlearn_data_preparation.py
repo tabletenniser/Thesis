@@ -2,10 +2,9 @@
 
 # In[1]:
 
-get_ipython().magic(u'matplotlib inline')
 import matplotlib
-import matplotlib.pyplot as plt
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from sklearn import svm, cross_validation
 import pylab as pl
 from PIL import Image
@@ -30,7 +29,7 @@ plt.rcParams['image.cmap'] = 'gray'
 
 if not os.path.isfile('~/caffe/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel'):
     print("Downloading pre-trained CaffeNet model...")
-    get_ipython().system(u'~/caffe/caffe/scripts/download_model_binary.py ~/caffe/caffe/models/bvlc_reference_caffenet')
+    os.system(u'~/caffe/caffe/scripts/download_model_binary.py ~/caffe/caffe/models/bvlc_reference_caffenet')
 
 
 # In[3]:
@@ -45,19 +44,22 @@ import skimage
 import skimage.io
 import time
 
-start_time = time.time()
 container_path = 'output_labeled_img_dir_5videos_for_pt/'
 
-training_set = {}
-training_set['data'] = []
-training_set['target'] = []
-
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
-#print 'folders: ', pt_folders
-#for pt_folder in pt_folders:
 
-def write_to_data_file(pt_index):
-    pt_folder = pt_folders[pt_index]
+def write_to_data_file(pt_num):
+    global container_path
+    global pt_folders
+    global caffe_root
+    global caffe_real_root
+    global thesis_root
+
+    start_time = time.time()
+    training_set = {}
+    training_set['data'] = []
+    training_set['target'] = []
+    pt_folder = pt_folders[pt_num]
     pt_folder_path = os.path.join(container_path, pt_folder)
     documents = [os.path.join(pt_folder_path, d) for d in sorted(os.listdir(pt_folder_path))]
     pt_data = []
@@ -161,15 +163,15 @@ def write_to_data_file(pt_index):
 
     # In[10]:
 
-    output_file = './seq_data/point_%05d.dat'%(pt_index+1)
+    output_file = './seq_data/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
-        for i in xrange(len(result[pt_index])):
-            result_lst = [str(elem) for elem in result[pt_index][i]]
+        for i in xrange(len(result[0])):
+            result_lst = [str(elem) for elem in result[0][i]]
             f.write(' '.join(result_lst))
-            f.write(' '+training_set['target'][pt_index][i])
+            f.write(' '+training_set['target'][0][i])
             f.write('\n')
     print 'SAVE LABEL TO '+output_file
 
 
-for pt_index,_ in enumerate(pt_folders):
-    write_to_data_file(pt_index)
+for pt_num,_ in enumerate(pt_folders):
+    write_to_data_file(pt_num)
