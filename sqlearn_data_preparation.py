@@ -151,7 +151,7 @@ def write_to_data_file(pt_num):
             #net.blobs['data'].data[...] = map(lambda x: transformer.preprocess('data', x), training_set['data'][i:i+10])
             out = net.forward()
             #print net.blobs['fc7'].data.shape
-            pt_result.append(np.mean(net.blobs['fc7'].data, axis=0))
+            pt_result.append(np.mean(net.blobs['fc6'].data, axis=0))
         result.append(pt_result)
 
     print 'Number of pts in result: ', len(result), 'Number of frame labels in result[0]', len(result[0])
@@ -164,7 +164,7 @@ def write_to_data_file(pt_num):
 
     # In[10]:
 
-    output_file = './seq_data/point_%05d.dat'%(pt_num+1)
+    output_file = './seq_data_fc6/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
         for i in xrange(len(result[0])):
             result_lst = [str(elem) for elem in result[0][i]]
