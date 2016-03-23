@@ -44,7 +44,8 @@ import skimage
 import skimage.io
 import time
 
-container_path = 'output_labeled_img_dir_5videos_for_pt/'
+# container_path = 'output_labeled_img_dir_5videos_for_pt/'
+container_path = './output_labeled_img_dir_6videos_for_pt/'
 
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
 
@@ -86,7 +87,7 @@ def write_to_data_file(pt_num):
         img = skimage.img_as_float(skimage.io.imread(pic)).astype(np.float32)
         frame_num = int(pic_basename_lower[pic_basename_lower.find('_')+1: pic_basename_lower.find('.')])
         for tup in frame_class_tuple:
-            if frame_num >= tup[0] and frame_num < tup[1]:                
+            if frame_num >= tup[0] and frame_num < tup[1]:
                 frame_target = tup[2]
                 break
         pt_data.append(img)
