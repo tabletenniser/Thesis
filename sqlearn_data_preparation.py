@@ -169,7 +169,7 @@ def write_to_data_file(pt_num):
         normalized_result.append((r-np.mean(r))/np.std(r))
     result = normalized_result
 
-    output_file = './seq_data_fc6/point_%05d.dat'%(pt_num+1)
+    output_file = './seq_data_fc6_normalized/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
         for i in xrange(len(result[0])):
             result_lst = [str(elem) for elem in result[0][i]]
