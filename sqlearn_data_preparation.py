@@ -163,6 +163,11 @@ def write_to_data_file(pt_num):
     # plt.imshow(transformer.deprocess('data', net.blobs['data'].data[4]))
 
     # In[10]:
+    normalized_result = []
+    #normalized_result = normalize(result)
+    for r in result:
+        normalized_result.append((r-np.mean(r))/np.std(r))
+    result = normalized_result
 
     output_file = './seq_data_fc6/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
