@@ -44,7 +44,8 @@ import skimage
 import skimage.io
 import time
 
-container_path = 'output_labeled_img_dir_5videos_for_pt/'
+# container_path = 'output_labeled_img_dir_5videos_for_pt/'
+container_path = './output_labeled_img_dir_6videos_for_pt/'
 
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
 
@@ -86,7 +87,7 @@ def write_to_data_file(pt_num):
         img = skimage.img_as_float(skimage.io.imread(pic)).astype(np.float32)
         frame_num = int(pic_basename_lower[pic_basename_lower.find('_')+1: pic_basename_lower.find('.')])
         for tup in frame_class_tuple:
-            if frame_num >= tup[0] and frame_num < tup[1]:                
+            if frame_num >= tup[0] and frame_num < tup[1]:
                 frame_target = tup[2]
                 break
         pt_data.append(img)
@@ -150,7 +151,7 @@ def write_to_data_file(pt_num):
             #net.blobs['data'].data[...] = map(lambda x: transformer.preprocess('data', x), training_set['data'][i:i+10])
             out = net.forward()
             #print net.blobs['fc7'].data.shape
-            pt_result.append(np.mean(net.blobs['fc7'].data, axis=0))
+            pt_result.append(np.mean(net.blobs['fc6'].data, axis=0))
         result.append(pt_result)
 
     print 'Number of pts in result: ', len(result), 'Number of frame labels in result[0]', len(result[0])
@@ -162,8 +163,13 @@ def write_to_data_file(pt_num):
     # plt.imshow(transformer.deprocess('data', net.blobs['data'].data[4]))
 
     # In[10]:
+    normalized_result = []
+    #normalized_result = normalize(result)
+    for r in result:
+        normalized_result.append((r-np.mean(r))/np.std(r))
+    result = normalized_result
 
-    output_file = './seq_data/point_%05d.dat'%(pt_num+1)
+    output_file = './seq_data_fc6_normalized/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
         for i in xrange(len(result[0])):
             result_lst = [str(elem) for elem in result[0][i]]
