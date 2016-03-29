@@ -45,7 +45,8 @@ import skimage.io
 import time
 
 # container_path = 'output_labeled_img_dir_5videos_for_pt/'
-container_path = './output_labeled_img_dir_6videos_for_pt/'
+# container_path = './output_labeled_img_dir_6videos_for_pt/'
+container_path = './output_labeled_img_dir_7videos_for_pt/'
 
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
 
