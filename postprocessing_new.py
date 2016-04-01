@@ -111,15 +111,22 @@ def select_images_last_10(output_image_dir):
             files_to_copy = sorted(os.listdir(full_output_image_path))
             if len(files_to_copy) < 10:
                 continue
-            for f in files_to_copy[-10:]:
-                src = os.path.join(full_output_image_path, f)
-                dest = os.path.join(output_selected_image_path, img_folder+'_'+f)
-                print "DEBUG: copy ", src, " to ", dest
-                shutil.copy(src, dest)
+            index = 0
+            for i,_ in enumerate(files_to_copy):
+                if i+10 >= len(files_to_copy):
+                    break
+                if i % 2 == 0:
+                    continue
+                for f in files_to_copy[i:i+10]:
+                    src = os.path.join(full_output_image_path, f)
+                    dest = os.path.join(output_selected_image_path, img_folder+'_'+str(index)+'_'+f)
+                    print "DEBUG: copy ", src, " to ", dest
+                    shutil.copy(src, dest)
+                index+=1
 
 def main(input_dir, image_dir):
     start_time = time.time()
-    crop_size_for_video_and_images(input_dir, image_dir)
+    # crop_size_for_video_and_images(input_dir, image_dir)
     # select_images(args.image_dir, args.audio_dir)
     select_images_last_10(image_dir)
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
