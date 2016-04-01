@@ -85,15 +85,16 @@ label_to_index={
         'C18_TOP_PLAYER_BACKHAND_CHOP':8,
         'C19_BOTTOM_PLAYER_FOREHAND_CHOP':9,
         'C1_TOP_PLAYER_FOREHAND_SERVE':10,
-        # 'C2_TOP_PLAYER_BACKHAND_SERVE':11,
         'C20_BOTTOM_PLAYER_BACKHAND_CHOP':11,
-        'C3_BOTTOM_PLAYER_FOREHAND_SERVE':12,
+        # 'C2_TOP_PLAYER_BACKHAND_SERVE':11,
+        'C30_BOTTOM_PLAYER_BACKHAND_LOB':12,
+        'C3_BOTTOM_PLAYER_FOREHAND_SERVE':13,
         # 'C4_BOTTOM_PLAYER_BACKHAND_SERVE':14,
-        'C5_TOP_PLAYER_FOREHAND_LOOP':13,
-        'C6_TOP_PLAYER_BACKHAND_LOOP':14,
-        'C7_BOTTOM_PLAYER_FOREHAND_LOOP':15,
-        'C8_BOTTOM_PLAYER_BACKHAND_LOOP':16,
-        'C9_TOP_PLAYER_FOREHAND_BLOCK':17}
+        'C5_TOP_PLAYER_FOREHAND_LOOP':14,
+        'C6_TOP_PLAYER_BACKHAND_LOOP':15,
+        'C7_BOTTOM_PLAYER_FOREHAND_LOOP':16,
+        'C8_BOTTOM_PLAYER_BACKHAND_LOOP':17,
+        'C9_TOP_PLAYER_FOREHAND_BLOCK':18}
 index_to_label={
         0:'C10_TOP_PLAYER_BACKHAND_BLOCK',
         1:'C11_BOTTOM_PLAYER_FOREHAND_BLOCK',
@@ -106,20 +107,21 @@ index_to_label={
         8:'C18_TOP_PLAYER_BACKHAND_CHOP',
         9:'C19_BOTTOM_PLAYER_FOREHAND_CHOP',
         10:'C1_TOP_PLAYER_FOREHAND_SERVE',
-        # 11:'C2_TOP_PLAYER_BACKHAND_SERVE',
         11:'C20_BOTTOM_PLAYER_BACKHAND_CHOP',
-        12:'C3_BOTTOM_PLAYER_FOREHAND_SERVE',
+        # 11:'C2_TOP_PLAYER_BACKHAND_SERVE',
+        12:'C30_BOTTOM_PLAYER_BACKHAND_LOB',
+        13:'C3_BOTTOM_PLAYER_FOREHAND_SERVE',
         # 14:'C4_BOTTOM_PLAYER_BACKHAND_SERVE',
-        13:'C5_TOP_PLAYER_FOREHAND_LOOP',
-        14:'C6_TOP_PLAYER_BACKHAND_LOOP',
-        15:'C7_BOTTOM_PLAYER_FOREHAND_LOOP',
-        16:'C8_BOTTOM_PLAYER_BACKHAND_LOOP',
-        17:'C9_TOP_PLAYER_FOREHAND_BLOCK'}
+        14:'C5_TOP_PLAYER_FOREHAND_LOOP',
+        15:'C6_TOP_PLAYER_BACKHAND_LOOP',
+        16:'C7_BOTTOM_PLAYER_FOREHAND_LOOP',
+        17:'C8_BOTTOM_PLAYER_BACKHAND_LOOP',
+        18:'C9_TOP_PLAYER_FOREHAND_BLOCK'}
 
 def load_data():
     # files = glob('./seq_data/point_00125.dat')
-    # files = glob('./seq_data_fc6_normalized_testset/point_00001.dat')
-    files = glob('./seq_data_fc6_normalized_testset/point_00*.dat')
+    files = glob('./seq_data_fc6_normalized_new/point_00001.dat')
+    # files = glob('./seq_data_fc6_normalized_new/point_00*.dat')
     pairwise_potential = [[0 for _ in xrange(30)] for _ in xrange(30)]
 
     test_data = []
@@ -135,10 +137,12 @@ def load_data():
                 line = line.strip().split()
                 test_label_pt.append(line[-1])
                 test_data_pt.append(line[:-1])
-                if prev_label != None and not 'MISS_HIT' in line[-1] and not 'LOB' in line[-1] and not 'UNDER_NET' in line[-1] and not 'HIT_OUT' in line[-1]:
+                if prev_label != None and not 'MISS_HIT' in line[-1] and not 'C29_' in line[-1] and not 'UNDER_NET' in line[-1] and not 'HIT_OUT' in line[-1]:
                     pairwise_potential[label_to_index[prev_label]][label_to_index[line[-1]]]+=1
                     num_of_pairs += 1
-                prev_label = line[-1]
+                    prev_label = line[-1]
+                if prev_label == None:
+                    prev_label = line[-1]
         test_data.append(test_data_pt)
         test_label.append(test_label_pt)
     for i,_ in enumerate(pairwise_potential):
@@ -146,6 +150,7 @@ def load_data():
             pairwise_potential[i][j] = 1.0*pairwise_potential[i][j]/num_of_pairs
 
     # print('PAIRWISE_POTENTIALS:'+str(pairwise_potential))
+    # print('PAIRWISE_POTENTIALS shape:'+str(pairwise_potential.shape))
     # print(sum(map(sum, pairwise_potential)))
 
     return test_data, test_label, pairwise_potential
@@ -154,13 +159,16 @@ def load_data():
 if __name__ == "__main__":
     start_time = time.time()
     test_data, test_label, pairwise_potential = load_data()
-    clf = pickle.load(open( "./fc6_normalized_lr_clf_6videos.pickle", "rb" ))
+    clf = pickle.load(open( "./fc6_normalized_lr_clf_7videos.pickle", "rb" ))
+    # clf = pickle.load(open( "./fc6_normalized_clf_6videos.pickle", "rb" ))
 
     numCorrectPred = 0
     accuracies = []
 
     # for PAIR_WEIGHT in [0,0.05,0.1,0.2,0.4,0.6,0.8,0.9,0.95,1]:
     for PAIR_WEIGHT in [0]:
+        print('PAIR_WEIGHT:%f'%PAIR_WEIGHT)
+    # for PAIR_WEIGHT in [0]:
         for i,_ in enumerate(test_data):
             numCorrectPred = 0
             prev_pred = None
@@ -171,7 +179,8 @@ if __name__ == "__main__":
                 for k in xrange(min_ind+1, max_ind):
                     sum_dat += np.array(test_data[i][k], dtype=np.float64)
                 dat = sum_dat / 9
-                # y_pred = clf.predict(dat)[0].replace('_selected', '')
+                y_pred = clf.predict(dat)[0].replace('_selected', '')
+
                 predict_probability = clf.predict_proba(dat)[0]
                 # print('predict_probability size:'+str(predict_probability.shape))
                 # print('predict_probability'+str(predict_probability))
@@ -185,8 +194,8 @@ if __name__ == "__main__":
                         prev_pred = 12
                 else:
                     for l,_ in enumerate(predict_probability):
-                        final_pred_prob.append(pairwise_potential[prev_pred][l]*predict_probability[l])
-                        # final_pred_prob.append(PAIR_WEIGHT*pairwise_potential[prev_pred][l]+(1-PAIR_WEIGHT)*predict_probability[l])
+                        # final_pred_prob.append(pairwise_potential[prev_pred][l]*predict_probability[l])
+                        final_pred_prob.append(PAIR_WEIGHT*pairwise_potential[prev_pred][l]+(1-PAIR_WEIGHT)*predict_probability[l])
                     final_pred_prob = np.asarray(final_pred_prob)
                     # print('final_pred_prob size:'+str(final_pred_prob.shape))
                     # print('final_pred_prob'+str(final_pred_prob))
@@ -198,6 +207,7 @@ if __name__ == "__main__":
                     numCorrectPred += 1
                 # print("Index: %d; Predict: %s; Actual: %s"%(j, y_pred, test_label[i][j]))
                 # print("Index: %d; Predict: %s; Actual: %s"%(j, index_to_label[prev_pred], test_label[i][j]))
+                print("Index: %d; Predict: %s; Predict_without_prob: %s; Actual: %s"%(j, index_to_label[prev_pred], y_pred, test_label[i][j]))
             accuracies.append(100.0*numCorrectPred/len(test_data[i]))
             print("Accuracy: %.3f" % (accuracies[-1]))
 
