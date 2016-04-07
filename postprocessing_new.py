@@ -86,9 +86,9 @@ def crop_size_for_video_and_images(input_dir, output_image_dir):
                 box = (300, 0, 900, 600)
                 region = ii.crop(box)
                 region.save(os.path.join(full_img_folder_name, img_file))
-                for i in xrange(len(mix_classes_full_img_folder_name)):
-                    region.save(os.path.join(mix_classes_full_img_folder_name[i], img_file))
-                    print 'save cropped image to mix class', os.path.join(mix_classes_full_img_folder_name[i], img_file)
+                # for i in xrange(len(mix_classes_full_img_folder_name)):
+                #     region.save(os.path.join(mix_classes_full_img_folder_name[i], img_file))
+                #     print 'save cropped image to mix class', os.path.join(mix_classes_full_img_folder_name[i], img_file)
                 print 'save cropped image to', os.path.join(full_img_folder_name, img_file)
 
     return
@@ -115,7 +115,7 @@ def select_images_last_10(output_image_dir):
             for i,_ in enumerate(files_to_copy):
                 if i+10 >= len(files_to_copy):
                     break
-                if i % 2 == 0:
+                if i % 5 != 0:
                     continue
                 for f in files_to_copy[i:i+10]:
                     src = os.path.join(full_output_image_path, f)
