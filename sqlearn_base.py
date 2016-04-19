@@ -94,7 +94,16 @@ label_to_index={
         'C6_TOP_PLAYER_BACKHAND_LOOP':15,
         'C7_BOTTOM_PLAYER_FOREHAND_LOOP':16,
         'C8_BOTTOM_PLAYER_BACKHAND_LOOP':17,
-        'C9_TOP_PLAYER_FOREHAND_BLOCK':18}
+        'C9_TOP_PLAYER_FOREHAND_BLOCK':18,
+        'C21_TOP_PLAYER_UNDER_NET':19,
+        'C22_TOP_PLAYER_HIT_OUT':20,
+        'C23_TOP_PLAYER_FOREHAND_MISS_HIT':21,
+        'C24_TOP_PLAYER_BACKHAND_MISS_HIT':22,
+        'C25_BOTTOM_PLAYER_UNDER_NET':23,
+        'C26_BOTTOM_PLAYER_HIT_OUT':24,
+        'C27_BOTTOM_PLAYER_FOREHAND_MISS_HIT':25,
+        'C28_BOTTOM_PLAYER_BACKHAND_MISS_HIT':26}
+
 index_to_label={
         0:'C10_TOP_PLAYER_BACKHAND_BLOCK',
         1:'C11_BOTTOM_PLAYER_FOREHAND_BLOCK',
@@ -116,17 +125,51 @@ index_to_label={
         15:'C6_TOP_PLAYER_BACKHAND_LOOP',
         16:'C7_BOTTOM_PLAYER_FOREHAND_LOOP',
         17:'C8_BOTTOM_PLAYER_BACKHAND_LOOP',
-        18:'C9_TOP_PLAYER_FOREHAND_BLOCK'}
+        18:'C9_TOP_PLAYER_FOREHAND_BLOCK',
+        19:'C21_TOP_PLAYER_UNDER_NET',
+        20:'C22_TOP_PLAYER_HIT_OUT',
+        21:'C23_TOP_PLAYER_FOREHAND_MISS_HIT',
+        22:'C24_TOP_PLAYER_BACKHAND_MISS_HIT',
+        23:'C25_BOTTOM_PLAYER_UNDER_NET',
+        24:'C26_BOTTOM_PLAYER_HIT_OUT',
+        25:'C27_BOTTOM_PLAYER_FOREHAND_MISS_HIT',
+        26:'C28_BOTTOM_PLAYER_BACKHAND_MISS_HIT'}
 
-def load_data():
+def load_data_for_training():
     # files = glob('./seq_data/point_00125.dat')
-    files = glob('./seq_data_fc6_normalized_new/point_00001.dat')
+    files = glob('./seq_data_fc6_normalized_new/point_00*.dat')
     # files = glob('./seq_data_fc6_normalized_new/point_00*.dat')
     pairwise_potential = [[0 for _ in xrange(30)] for _ in xrange(30)]
 
+    num_of_pairs = 0
+    # print("Loading test data...", end=" ")
+    for dat_file in files:
+        prev_label = None
+        with open(dat_file) as f:
+            for line in f:
+                line = line.strip().split()
+                # if prev_label != None and not 'MISS_HIT' in line[-1] and not 'C29_' in line[-1] and not 'UNDER_NET' in line[-1] and not 'HIT_OUT' in line[-1]:
+                if prev_label != None and not 'C29_' in line[-1]:
+                    pairwise_potential[label_to_index[prev_label]][label_to_index[line[-1]]]+=1
+                    num_of_pairs += 1
+                    prev_label = line[-1]
+                if prev_label == None:
+                    prev_label = line[-1]
+    for i,_ in enumerate(pairwise_potential):
+        for j,_ in enumerate(pairwise_potential[i]):
+            pairwise_potential[i][j] = 1.0*pairwise_potential[i][j]/num_of_pairs
+
+    # print('PAIRWISE_POTENTIALS:'+str(pairwise_potential))
+    # print('PAIRWISE_POTENTIALS shape:'+str(pairwise_potential.shape))
+    # print(sum(map(sum, pairwise_potential)))
+    return pairwise_potential
+
+def load_data():
+    files = glob('./seq_data_fc6_normalized_8videos_testset/point_00*.dat')
+    # files = glob('./seq_data_fc6_normalized_8videos_testset/point_00004.dat')
+
     test_data = []
     test_label = []
-    num_of_pairs = 0
     # print("Loading test data...", end=" ")
     for dat_file in files:
         test_data_pt = []
@@ -137,41 +180,28 @@ def load_data():
                 line = line.strip().split()
                 test_label_pt.append(line[-1])
                 test_data_pt.append(line[:-1])
-                if prev_label != None and not 'MISS_HIT' in line[-1] and not 'C29_' in line[-1] and not 'UNDER_NET' in line[-1] and not 'HIT_OUT' in line[-1]:
-                    pairwise_potential[label_to_index[prev_label]][label_to_index[line[-1]]]+=1
-                    num_of_pairs += 1
-                    prev_label = line[-1]
-                if prev_label == None:
-                    prev_label = line[-1]
         test_data.append(test_data_pt)
         test_label.append(test_label_pt)
-    for i,_ in enumerate(pairwise_potential):
-        for j,_ in enumerate(pairwise_potential[i]):
-            pairwise_potential[i][j] = 1.0*pairwise_potential[i][j]/num_of_pairs
 
-    # print('PAIRWISE_POTENTIALS:'+str(pairwise_potential))
-    # print('PAIRWISE_POTENTIALS shape:'+str(pairwise_potential.shape))
-    # print(sum(map(sum, pairwise_potential)))
-
-    return test_data, test_label, pairwise_potential
+    return test_data, test_label
 
 
 if __name__ == "__main__":
     start_time = time.time()
-    test_data, test_label, pairwise_potential = load_data()
+    pairwise_potential = load_data_for_training()
+    test_data, test_label = load_data()
     clf = pickle.load(open( "./fc6_normalized_lr_clf_7videos.pickle", "rb" ))
-    # clf = pickle.load(open( "./fc6_normalized_clf_6videos.pickle", "rb" ))
+    clf_winning = pickle.load(open( "./fc6_normalized_lr_clf_7videos_winning_cls.pickle", "rb" ))
 
-    numCorrectPred = 0
-    accuracies = []
-
-    # for PAIR_WEIGHT in [0,0.05,0.1,0.2,0.4,0.6,0.8,0.9,0.95,1]:
+    # for PAIR_WEIGHT in [0.0001,0.05,0.1,0.2,0.4,0.6,0.8,0.9,0.98,1]:
+    # for PAIR_WEIGHT in [0.99]:
     for PAIR_WEIGHT in [0]:
+        accuracies = []
         print('PAIR_WEIGHT:%f'%PAIR_WEIGHT)
     # for PAIR_WEIGHT in [0]:
         for i,_ in enumerate(test_data):
             numCorrectPred = 0
-            prev_pred = None
+            # dp_table[time_length][stroke_cls][0:likelihood/1:prev_index]
             for j,_ in enumerate(test_data[i]):
                 min_ind = max(0, j-4)
                 max_ind = min(len(test_data[i]), j+5)
@@ -181,33 +211,14 @@ if __name__ == "__main__":
                 dat = sum_dat / 9
                 y_pred = clf.predict(dat)[0].replace('_selected', '')
 
-                predict_probability = clf.predict_proba(dat)[0]
-                # print('predict_probability size:'+str(predict_probability.shape))
-                # print('predict_probability'+str(predict_probability))
-                final_pred_prob = []
-                if prev_pred == None:
-                    final_pred_prob = np.asarray(predict_probability)
-                    # FORCING C1_TOP_PLAYER_FOREHAND_SERVE or C3_BOTTOM_PLAYER_FOREHAND_SERVE
-                    if final_pred_prob[10] > final_pred_prob[12]:
-                        prev_pred = 10
-                    else:
-                        prev_pred = 12
-                else:
-                    for l,_ in enumerate(predict_probability):
-                        # final_pred_prob.append(pairwise_potential[prev_pred][l]*predict_probability[l])
-                        final_pred_prob.append(PAIR_WEIGHT*pairwise_potential[prev_pred][l]+(1-PAIR_WEIGHT)*predict_probability[l])
-                    final_pred_prob = np.asarray(final_pred_prob)
-                    # print('final_pred_prob size:'+str(final_pred_prob.shape))
-                    # print('final_pred_prob'+str(final_pred_prob))
-                    prev_pred = np.argmax(final_pred_prob)
-                    # print('PREDICTION:'+index_to_label[prev_pred])
-
-                # if y_pred == test_label[i][j]:
-                if index_to_label[prev_pred] == test_label[i][j]:
+                if y_pred == test_label[i][j]:
                     numCorrectPred += 1
-                # print("Index: %d; Predict: %s; Actual: %s"%(j, y_pred, test_label[i][j]))
-                # print("Index: %d; Predict: %s; Actual: %s"%(j, index_to_label[prev_pred], test_label[i][j]))
-                print("Index: %d; Predict: %s; Predict_without_prob: %s; Actual: %s"%(j, index_to_label[prev_pred], y_pred, test_label[i][j]))
+
+            # final_pred_prob = np.asarray(final_pred_prob)
+            # prev_pred = np.argmax(final_pred_prob)
+            # if index_to_label[prev_pred] == test_label[i][j]:
+            #     numCorrectPred += 1
+            # print("Index: %d; Predict: %s; Predict_without_prob: %s; Actual: %s"%(j, index_to_label[prev_pred], y_pred, test_label[i][j]))
             accuracies.append(100.0*numCorrectPred/len(test_data[i]))
             print("Accuracy: %.3f" % (accuracies[-1]))
 
