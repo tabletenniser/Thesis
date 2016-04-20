@@ -46,7 +46,7 @@ import time
 
 # container_path = 'output_labeled_img_dir_5videos_for_pt/'
 # container_path = './output_labeled_img_dir_6videos_for_pt/'
-container_path = './output_labeled_img_dir_8videos_for_pt_testset/'
+container_path = './output_labeled_img_dir_8videos_for_pt'
 
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
 
@@ -115,8 +115,12 @@ def write_to_data_file(pt_num):
     # caffe.set_mode_cpu()
     print caffe_root + 'models/bvlc_reference_caffenet/deploy.prototxt'
     #!ls caffe_root+'models/bvlc_reference_caffenet/deploy.prototxt'
-    net = caffe.Net(caffe_root + 'models/bvlc_reference_caffenet/deploy.prototxt',
-                    caffe_root + 'models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel',
+    # net = caffe.Net(caffe_root + 'models/bvlc_reference_caffenet/deploy.prototxt',
+    #                 caffe_root + 'models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel',
+    #                 caffe.TEST)
+
+    net = caffe.Net(caffe_root + 'models/finetune_stroke_cls/deploy.prototxt',
+                    caffe_root + 'fine_tune_stroke_cls_500iter.caffemodel',
                     caffe.TEST)
 
     # input preprocessing: 'data' is the name of the input blob == net.inputs[0]
@@ -170,7 +174,7 @@ def write_to_data_file(pt_num):
         normalized_result.append((r-np.mean(r))/np.std(r))
     result = normalized_result
 
-    output_file = './seq_data_fc6_normalized_8videos_testset/point_%05d.dat'%(pt_num+1)
+    output_file = './seq_data_fc6_normalized_8videos/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
         for i in xrange(len(result[0])):
             result_lst = [str(elem) for elem in result[0][i]]

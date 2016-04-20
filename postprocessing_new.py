@@ -126,7 +126,7 @@ def select_images_last_10(output_image_dir):
 
 def main(input_dir, image_dir):
     start_time = time.time()
-    # crop_size_for_video_and_images(input_dir, image_dir)
+    crop_size_for_video_and_images(input_dir, image_dir)
     # select_images(args.image_dir, args.audio_dir)
     select_images_last_10(image_dir)
     print "TOTAL EXECUTION TIME:"+str(time.time()-start_time)+" seconds"
