@@ -20,10 +20,15 @@ https://www.youtube.com/watch?v=aEgCOY8CNso
 1. python wrapper_new_manual_label.py final_input/url.txt final_input inter_dir output_dir output_labeled_image_dir
    * Create inter_dir folder containing the downloaded .mp4 files in videos/, decomposed frame images in frames/.
    * Create output_dir folder containing the set of corresponding frame images for each of the 28 defined classes (20 player stroke classes and 8 point-ending classes)
-   * Create output_labeled_image_dir folder containing same images as the output_dir but properly cropped and pre-processed. All images from the same class but different points are put into the same folder.
-   * 
+   * Create output_labeled_image_dir folder containing same images as the output_dir but properly cropped and pre-processed. All images from the same class but different points are put into the same folder to prepare for training.
+2. Open CreateFineTuneTrainingData.ipynb using ipython notebook and run through it. Run 'shuf -n 1 <output_file_from_CreateFineTuneTrainingData> > <testing.txt>' to change the training / testing data order (it would be sorted by class label otherwise).
+   * Set dataSrcFolder to the output_labeled_image_dir folder above with either 20 stroke classes or 8 point-ending classes.
+   * This creates output file (testing.txt or training.txt) that's used by the 'train_val.prototxt' in the caffe framework.
+3. Open fine_tuning_all_cls_classifier.ipynb using ipython notebook and run through it and save the corresponding model into a .caffemodel file, which can then be used for the classification task procedure above.
 
 ### Data Visualization
+1. Run 'python sqlearn_crf.py' for a single testing table tennis point video and uncomment the print statements where it outputs the ACTUAL and PREDICTED labels (line 188 and line 195), pipe stdout to a file such as <point_xx.label>.
+2. Open Display_img_as_video.ipynb using ipython notebook and run through it, set label_file to the above .label file and src_dir to the frame images of this point in the inter_dir directory from running wrapper_new_manual_label_for_pt.py. This will output a .avi file similar to: https://www.youtube.com/watch?v=G8wE_eo7o-I
 
 
 
