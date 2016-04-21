@@ -1,13 +1,12 @@
 Fourth Year Thesis
 ==========
 
-Hi there, welcome to my undergraduate thesis github repo! This project aims to utilize machine learning techniques to create semantic understanding in table tennis video clips. The current result is summarized in the final_report.pdf. Check out some data visualization of this project here:
-https://www.youtube.com/watch?v=G8wE_eo7o-I
-https://www.youtube.com/watch?v=aEgCOY8CNso
+Hi there, welcome to my undergraduate thesis github repo! This project aims to utilize machine learning techniques to create semantic understanding in table tennis video clips. The current result is summarized in the final_report.pdf. Check out some data visualization of this project here:  
+https://www.youtube.com/watch?v=G8wE_eo7o-I  
+https://www.youtube.com/watch?v=aEgCOY8CNso  
 
 
-Procedure to reproduce the 58% annotation accuracy mentioned in final_report.pdf:
----------------
+# Procedure to reproduce the 58% annotation accuracy mentioned in final_report.pdf:
 1. python wrapper_new_manual_label_for_pt.py final_input/url.txt final_input inter_dir output_dir output_labeled_image_dir
    * Create inter_dir folder containing the downloaded .mp4 files in videos/, decomposed frame images in frames/.
    * Create output_dir folder containing the set of corresponding frame images for each point.
