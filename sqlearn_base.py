@@ -137,7 +137,7 @@ index_to_label={
 
 def load_data_for_training():
     # files = glob('./seq_data/point_00125.dat')
-    files = glob('./seq_data_fc6_normalized_new/point_00*.dat')
+    files = glob('./seq_data_fc6_normalized_8videos_trainingset/point_00*.dat')
     # files = glob('./seq_data_fc6_normalized_new/point_00*.dat')
     pairwise_potential = [[0 for _ in xrange(30)] for _ in xrange(30)]
 
