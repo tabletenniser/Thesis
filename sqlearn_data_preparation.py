@@ -44,8 +44,8 @@ import skimage
 import skimage.io
 import time
 
-container_path = './output_labeled_img_dir_8videos_for_pt_trainingset_temp'
-# container_path = './output_labeled_img_dir_8videos_for_pt_testset'
+# container_path = './output_labeled_img_dir_8videos_for_pt_trainingset'
+container_path = './output_labeled_img_dir_8videos_for_pt_testset'
 
 pt_folders = [f for f in sorted(os.listdir(container_path)) if os.path.isdir(os.path.join(container_path, f))]
 
@@ -119,7 +119,7 @@ def write_to_data_file(pt_num):
     #                 caffe.TEST)
 
     net = caffe.Net(caffe_root + 'models/finetune_stroke_cls/deploy.prototxt',
-                    thesis_root + 'fine_tune_stroke_cls_500iter.caffemodel',
+                    thesis_root + 'fine_tune_stroke_cls_2000iter.caffemodel',
                     caffe.TEST)
 
     # input preprocessing: 'data' is the name of the input blob == net.inputs[0]
@@ -173,7 +173,7 @@ def write_to_data_file(pt_num):
         normalized_result.append((r-np.mean(r))/np.std(r))
     result = normalized_result
 
-    output_file = './seq_data_fc6_normalized_8videos_trainingset_temp/point_%05d.dat'%(pt_num+1)
+    output_file = './seq_data_fc6_normalized_8videos_testset_2000iter/point_%05d.dat'%(pt_num+1)
     # output_file = './seq_data_fc6_normalized_8videos_testset/point_%05d.dat'%(pt_num+1)
     with open(output_file, 'w+') as f:
         for i in xrange(len(result[0])):
