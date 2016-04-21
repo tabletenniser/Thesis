@@ -6,7 +6,7 @@ https://www.youtube.com/watch?v=G8wE_eo7o-I
 https://www.youtube.com/watch?v=aEgCOY8CNso  
 
 
-# Procedure to reproduce the 58% annotation accuracy mentioned in final_report.pdf:
+### Procedure to reproduce the 58% annotation accuracy mentioned in final_report.pdf:
 1. python wrapper_new_manual_label_for_pt.py final_input/url.txt final_input inter_dir output_dir output_labeled_image_dir
    * Create inter_dir folder containing the downloaded .mp4 files in videos/, decomposed frame images in frames/.
    * Create output_dir folder containing the set of corresponding frame images for each point.
@@ -16,21 +16,18 @@ https://www.youtube.com/watch?v=aEgCOY8CNso
 3. Set the training_files and testing_files in sqlearn_crf.py to the corresponding folders containing the .dat files above and run 'python sqlearn_crf.py'. It should output 58% annotation accuracy to stdout!!!
 
 
-Fine-tuning on AlexNet
----------------
+### Fine-tuning on AlexNet
 1. python wrapper_new_manual_label.py final_input/url.txt final_input inter_dir output_dir output_labeled_image_dir
    * Create inter_dir folder containing the downloaded .mp4 files in videos/, decomposed frame images in frames/.
    * Create output_dir folder containing the set of corresponding frame images for each of the 28 defined classes (20 player stroke classes and 8 point-ending classes)
    * Create output_labeled_image_dir folder containing same images as the output_dir but properly cropped and pre-processed. All images from the same class but different points are put into the same folder.
    * 
 
-Data Visualization
----------------
+### Data Visualization
 
 
 
-Steps in wrapper_new_manual_label.py
----------------
+### Steps in wrapper_new_manual_label.py
 1. python crawl.py `<path_to_utl.txt>` `<output_folder_for_mp4_files>`
 2. python decompose_ffmpeg.py `<input_foler_for_mp4_files>` `<output_foler_for_jpg_files_with_subfolers>` using ffmpeg program
   * decompose_to_frames does the same thing but using opencv instead of ffmpeg
